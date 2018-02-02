@@ -1,0 +1,16 @@
+body {
+  background-color:#ddd;
+}
+#favicons {
+  overflow: hidden;
+}
+.favicon {
+    margin:10px;
+    width:16px;
+    height:16px;
+    display: block;
+    float:left;
+}
+.favicon img {
+    vertical-align:bottom;
+}

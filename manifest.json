@@ -1,0 +1,21 @@
+{
+    "name": "FaviconTab",
+    "version": "0.1",
+    "manifest_version": 2,
+
+    "description": "FaviconTab",
+
+    "permissions": [
+        "bookmarks", "tabs", "file://*", "chrome://favicon/"
+    ],
+    "chrome_url_overrides": {
+        "newtab": "html/favicontab.html"
+    },
+    "background" : {
+        "scripts": [
+          "js/installed.js"
+        ],
+        "persistent": false
+    }
+}
+
