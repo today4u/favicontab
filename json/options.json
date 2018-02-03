@@ -1,0 +1,6 @@
+{
+    "placement":[
+        {"id":"fixed", "value":0, "label":"Fixed"},
+        {"id":"random","value":1, "label":"Random"}
+    ]
+}

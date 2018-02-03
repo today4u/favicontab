@@ -5,6 +5,7 @@
 
     "description": "FaviconTab",
 
+    "options_page": "html/options.html",
     "permissions": [
         "bookmarks", "tabs", "file://*", "chrome://favicon/"
     ],
