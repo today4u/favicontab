@@ -1,6 +1,6 @@
 {
     "placement":[
-        {"id":"fixed", "value":0, "label":"Fixed"},
-        {"id":"random","value":1, "label":"Random"}
+        {"id":"auto",  "value":0, "label":"Auto"},
+        {"id":"manual","value":1, "label":"Manual"}
     ]
 }

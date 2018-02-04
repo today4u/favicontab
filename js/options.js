@@ -1,38 +1,81 @@
-// save 
-$('#folders').on('click', 'input[name=folder]', function() {
-    localStorage['useFolderId'] = $(this).val();
-});
-$('#placement').on('click', 'input[name=placement]', function() {
-     = $(this).val();
-});
+// save event
 
+// $('#folders').on('click', 'input[name=folder]', function() {
+//     localStorage['useFolderId'] = $(this).val();
+// });
+// $('#placement').on('click', 'input[name=placement]', function() {
+     
+// });
+
+
+
+const jsonPath = '../json/options.json';
 
 //useFolder
 chrome.bookmarks.getTree(function(roots){
+  var folder   = document.getElementById('folder');
+  //label.addEventListener("click", saveFolder, false);  
   roots.forEach(function(node) {
     if (!node.url) {
       if(typeof node.index !== "undefined") {
-        var checked = '';
+        folder.setAttribute('href', node.url);
+        var label   = document.createElement('label');
+        var input   = document.createElement('input');
+        var text    = document.createTextNode(node.title);
+        input.setAttribute('id',    node.id);
+        input.setAttribute('value', node.id);
+        input.setAttribute('type', 'radio');
+        input.setAttribute('name', 'folder');
         if(localStorage['useFolderId'] == node.id) {
-          checked = 'checked="checked"';
+            input.setAttribute('checked', 'checked');
         }
-        $("#folders").append('<label><input type="radio" name="folder" value="' + node.id + '" id="' + node.id + '" '+checked+'>' + node.title + '</label> ');
+        label.appendChild(input);
+        label.appendChild(text);
+        folder.appendChild(label);
       }
       node.children.forEach(arguments.callee);
     }
   });
+  folder.addEventListener("click", function (clickEvent) {
+    if (clickEvent.target.localName !== "input") {
+       return;
+    }
+    localStorage['useFolderId'] = clickEvent.target.value;
+  });
 });
 
-
-$.getJSON("../json/options.json" , function(data) {
-    //placement
+//placement
+var myJSON = new XMLHttpRequest();
+myJSON.onreadystatechange = function() {
+  if ((myJSON.readyState === 4) && (myJSON.status === 200)) {
+    var placement = document.getElementById('placement');
+    var data = JSON.parse(myJSON.responseText);
     data.placement.forEach(function(node) {
-      var checked = '';
+      var label   = document.createElement('label');
+      var input   = document.createElement('input');
+      var text    = document.createTextNode(node.label);
+      input.setAttribute('id',    node.id);
+      input.setAttribute('value', node.value);
+      input.setAttribute('type', 'radio');
+      input.setAttribute('name', 'placement');
       if(localStorage['placement'] == node.value) {
-        checked = 'checked="checked"';
+          input.setAttribute('checked', 'checked');
       }
-      $('#placement').append('<label><input type="radio" name="placement" value="'+node.value+'" id="'+node.id+'" type="radio" '+checked+'>'+node.label+'</label>');
+      label.appendChild(input);
+      label.appendChild(text);
+      placement.appendChild(label);
     });
-});
+    placement.addEventListener("click", function (clickEvent) {
+      if (clickEvent.target.localName !== "input") {
+         return;
+      }
+      localStorage['placement'] = clickEvent.target.value;
+      console.log(clickEvent.target.value)
+    });
+  }
+}
+myJSON.open("GET",jsonPath, true);
+myJSON.send(null);
 
-console.log(localStorage);
+
+console.log(localStorage)
