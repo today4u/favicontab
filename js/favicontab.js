@@ -1,3 +1,4 @@
+document.body.style.backgroundColor = localStorage['backgroundColor'];
 var board = document.getElementById("board");
 chrome.bookmarks.getChildren(localStorage['useFolderId'],function(roots){
   roots.forEach(function (node){

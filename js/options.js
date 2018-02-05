@@ -1,14 +1,3 @@
-// save event
-
-// $('#folders').on('click', 'input[name=folder]', function() {
-//     localStorage['useFolderId'] = $(this).val();
-// });
-// $('#placement').on('click', 'input[name=placement]', function() {
-     
-// });
-
-
-
 const jsonPath = '../json/options.json';
 
 //useFolder
@@ -18,7 +7,6 @@ chrome.bookmarks.getTree(function(roots){
   roots.forEach(function(node) {
     if (!node.url) {
       if(typeof node.index !== "undefined") {
-        folder.setAttribute('href', node.url);
         var label   = document.createElement('label');
         var input   = document.createElement('input');
         var text    = document.createTextNode(node.title);
@@ -77,4 +65,9 @@ xhr.onreadystatechange = function() {
 xhr.open("GET",jsonPath, true);
 xhr.send(null);
 
-console.log(localStorage)
+//backgroundColor
+var backgroundColor = document.getElementById('backgroundColor');
+backgroundColor.setAttribute('value',localStorage['backgroundColor']);
+backgroundColor.addEventListener("change", function (changeEvent) {
+  localStorage['backgroundColor'] = changeEvent.target.value;
+});
