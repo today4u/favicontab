@@ -45,11 +45,11 @@ chrome.bookmarks.getTree(function(roots){
 });
 
 //placement
-var myJSON = new XMLHttpRequest();
-myJSON.onreadystatechange = function() {
-  if ((myJSON.readyState === 4) && (myJSON.status === 200)) {
+var xhr = new XMLHttpRequest();
+xhr.onreadystatechange = function() {
+  if ((xhr.readyState === 4) && (xhr.status === 200)) {
     var placement = document.getElementById('placement');
-    var data = JSON.parse(myJSON.responseText);
+    var data = JSON.parse(xhr.responseText);
     data.placement.forEach(function(node) {
       var label   = document.createElement('label');
       var input   = document.createElement('input');
@@ -74,8 +74,7 @@ myJSON.onreadystatechange = function() {
     });
   }
 }
-myJSON.open("GET",jsonPath, true);
-myJSON.send(null);
-
+xhr.open("GET",jsonPath, true);
+xhr.send(null);
 
 console.log(localStorage)
