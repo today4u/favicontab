@@ -2,8 +2,7 @@ const jsonPath = '../json/options.json';
 
 //useFolder
 chrome.bookmarks.getTree(function(roots){
-  var folder   = document.getElementById('folder');
-  //label.addEventListener("click", saveFolder, false);  
+  var folder   = document.getElementById('folder');  
   roots.forEach(function(node) {
     if (!node.url) {
       if(typeof node.index !== "undefined") {
@@ -71,3 +70,4 @@ backgroundColor.setAttribute('value',localStorage['backgroundColor']);
 backgroundColor.addEventListener("change", function (changeEvent) {
   localStorage['backgroundColor'] = changeEvent.target.value;
 });
+
