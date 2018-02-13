@@ -16,6 +16,15 @@ chrome.bookmarks.getChildren(localStorage['useFolderId'],function(roots){
         img.setAttribute('draggable','true');
         board.appendChild(img);
       } else {
+        var img = document.createElement('img');
+        img.setAttribute('src',       '/img/folder.svg');
+        img.setAttribute('title',      node.title);
+        img.setAttribute('id',         node.id);
+        img.setAttribute('data-index', node.index);
+        img.setAttribute('class',      'folder');
+        img.setAttribute('draggable',  'true');
+        board.appendChild(img);
+
         //chrome.bookmarks.getChildren(node.id, function(roots){
         //  roots.forEach(function (node) {
         //    outputBookmark(node);
