@@ -19,7 +19,7 @@ chrome.bookmarks.getChildren(localStorage['useFolderId'],function(roots){
         var img = document.createElement('img');
         img.setAttribute('src',       '/img/folder.svg');
         img.setAttribute('title',      node.title);
-        img.setAttribute('id',         node.id);
+        img.setAttribute('id',         idPrefix+node.id);
         img.setAttribute('data-index', node.index);
         img.setAttribute('class',      'folder');
         img.setAttribute('draggable',  'true');
@@ -51,6 +51,8 @@ board.addEventListener('dragover',function(event){
 board.addEventListener('drop',   function(event){
   var el = document.getElementsByClassName('draging');
   var bookmarkId  = el[0].id.slice(idPrefix.length);
+  console.log(el[0])
+  console.log('bookmarkId:'+bookmarkId);
   var changeIndex = Number(event.target.dataset.index);
   if(event.target.dataset.index > el[0].dataset.index) {
     changeIndex =  changeIndex+1;
