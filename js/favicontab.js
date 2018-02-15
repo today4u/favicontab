@@ -2,41 +2,54 @@ var mode = 'link';
 var idPrefix = 'bid'
 document.body.style.backgroundColor = localStorage['backgroundColor'];
 var board = document.getElementById("board");
-chrome.bookmarks.getChildren(localStorage['useFolderId'],function(roots){
-  roots.forEach(function (node){
-    (function outputBookmark(node) {
-      if(typeof node.url !== "undefined") {
-        var img = document.createElement('img');
-        img.setAttribute('src',      'chrome://favicon/'+node.url);
-        img.setAttribute('title',      node.title);
-        img.setAttribute('id',         idPrefix+node.id);
-        img.setAttribute('data-url',   node.url);
-        img.setAttribute('data-index', node.index);
-        img.setAttribute('data-pid',   node.parentId);
-        img.setAttribute('class',     'favicon');
-        img.setAttribute('draggable', 'true');
-        board.appendChild(img);
-      } else {
-        var img = document.createElement('img');
-        img.setAttribute('src',       '/img/folder.svg');
-        img.setAttribute('title',      node.title);
-        img.setAttribute('id',         idPrefix+node.id);
-        img.setAttribute('data-index', node.index);
-        img.setAttribute('data-pid',   node.parentId);
-        img.setAttribute('class',      'folder');
-        img.setAttribute('draggable',  'true');
-        board.appendChild(img);
 
-        // chrome.bookmarks.getChildren(node.id, function(roots){
-        //  roots.forEach(function (node) {
-        //    outputBookmark(node);
-        //  });
-        // });
-      }
-    }(node));
+var faviconDisplay = function() {
+  chrome.bookmarks.getChildren(localStorage['useFolderId'],function(roots){
+    if(board.childNodes[0]) {
+      board.removeChild(board.childNodes[0]); 
+    }
+    var main = document.createElement('main');
+    roots.forEach(function (node){
+      (function outputBookmark(node) {
+        if(typeof node.url !== "undefined") {
+          var img = document.createElement('img');
+          img.setAttribute('src',      'chrome://favicon/'+node.url);
+          img.setAttribute('title',      node.title);
+          img.setAttribute('id',         idPrefix+node.id);
+          img.setAttribute('data-url',   node.url);
+          img.setAttribute('data-index', node.index);
+          img.setAttribute('data-pid',   node.parentId);
+          img.setAttribute('class',     'favicon');
+          img.setAttribute('draggable', 'true');
+          //board.appendChild(img);
+          main.appendChild(img);
+
+        } else {
+          var img = document.createElement('img');
+          img.setAttribute('src',       '/img/folder.svg');
+          img.setAttribute('title',      node.title);
+          img.setAttribute('id',         idPrefix+node.id);
+          img.setAttribute('data-index', node.index);
+          img.setAttribute('data-pid',   node.parentId);
+          img.setAttribute('class',      'folder');
+          img.setAttribute('draggable',  'true');
+          //board.appendChild(img);
+          main.appendChild(img);
+
+          // chrome.bookmarks.getChildren(node.id, function(roots){
+          //  roots.forEach(function (node) {
+          //    outputBookmark(node);
+          //  });
+          // });
+        }
+      }(node));
+    });
+    board.appendChild(main);
   });
-});
+}
 
+
+faviconDisplay();
 var link = function(event) {
   if(event.target.dataset.url) {
     //click favicon
@@ -69,6 +82,7 @@ board.addEventListener('drop',   function(event){
     //to folder
     chrome.bookmarks.move(bookmarkId, {"parentId": event.target.id.slice(idPrefix.length)});
   }
+  faviconDisplay();
 },false);
 board.addEventListener('dragend',function(event){
   var el = document.getElementById(event.target.id);
