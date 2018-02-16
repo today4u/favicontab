@@ -3,12 +3,24 @@ var idPrefix = 'bid'
 document.body.style.backgroundColor = localStorage['backgroundColor'];
 var board = document.getElementById("board");
 
-var faviconDisplay = function() {
-  chrome.bookmarks.getChildren(localStorage['useFolderId'],function(roots){
+var faviconDisplay = function(parentId) {
+  chrome.bookmarks.getChildren(parentId,function(roots){
     if(board.childNodes[0]) {
       board.removeChild(board.childNodes[0]); 
     }
     var main = document.createElement('main');
+    if(parentId != localStorage['useFolderId']) {
+      chrome.bookmarks.get(String(parentId), function(items) {
+        var img = document.createElement('img');
+        img.setAttribute('src',       '/img/folder_open.svg');
+        img.setAttribute('class',      'folder');
+        img.setAttribute('id',         idPrefix+items[0].parentId);
+        img.setAttribute('data-id',    items[0].parentId);
+        img.setAttribute('class',      'folder');
+        img.setAttribute('draggable', 'false');
+        main.insertBefore(img, main.firstChild);
+      });
+    }
     roots.forEach(function (node){
       (function outputBookmark(node) {
         if(typeof node.url !== "undefined") {
@@ -17,6 +29,7 @@ var faviconDisplay = function() {
           img.setAttribute('title',      node.title);
           img.setAttribute('id',         idPrefix+node.id);
           img.setAttribute('data-url',   node.url);
+          img.setAttribute('data-id',    node.id);
           img.setAttribute('data-index', node.index);
           img.setAttribute('data-pid',   node.parentId);
           img.setAttribute('class',     'favicon');
@@ -29,6 +42,7 @@ var faviconDisplay = function() {
           img.setAttribute('src',       '/img/folder.svg');
           img.setAttribute('title',      node.title);
           img.setAttribute('id',         idPrefix+node.id);
+          img.setAttribute('data-id',    node.id);
           img.setAttribute('data-index', node.index);
           img.setAttribute('data-pid',   node.parentId);
           img.setAttribute('class',      'folder');
@@ -48,12 +62,15 @@ var faviconDisplay = function() {
   });
 }
 
+faviconDisplay(localStorage['useFolderId']);
 
-faviconDisplay();
 var link = function(event) {
   if(event.target.dataset.url) {
     //click favicon
     window.open(event.target.dataset.url, '_blank');  
+  }
+  else {
+    faviconDisplay(event.target.dataset.id);
   }
 }
 
@@ -68,7 +85,7 @@ board.addEventListener('dragover',function(event){
 },false);
 board.addEventListener('drop',   function(event){
   var el = document.getElementsByClassName('draging');
-  var bookmarkId  = el[0].id.slice(idPrefix.length);
+  var bookmarkId  = el[0].dataset.id;
   var changeIndex = Number(event.target.dataset.index);
   //
   if(event.target.dataset.url) {
@@ -80,9 +97,9 @@ board.addEventListener('drop',   function(event){
   }
   else {
     //to folder
-    chrome.bookmarks.move(bookmarkId, {"parentId": event.target.id.slice(idPrefix.length)});
+    chrome.bookmarks.move(bookmarkId, {"parentId": event.target.dataset.id});
   }
-  faviconDisplay();
+  faviconDisplay(event.target.dataset.pid);
 },false);
 board.addEventListener('dragend',function(event){
   var el = document.getElementById(event.target.id);
