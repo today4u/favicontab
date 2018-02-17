@@ -1,4 +1,3 @@
-var mode = 'link';
 var idPrefix = 'bid'
 document.body.style.backgroundColor = localStorage['backgroundColor'];
 var board = document.getElementById("board");
@@ -22,59 +21,96 @@ var faviconDisplay = function(parentId) {
       });
     }
     roots.forEach(function (node){
-      (function outputBookmark(node) {
-        if(typeof node.url !== "undefined") {
-          var img = document.createElement('img');
-          img.setAttribute('src',      'chrome://favicon/'+node.url);
-          img.setAttribute('title',      node.title);
-          img.setAttribute('id',         idPrefix+node.id);
-          img.setAttribute('data-url',   node.url);
-          img.setAttribute('data-id',    node.id);
-          img.setAttribute('data-index', node.index);
-          img.setAttribute('data-pid',   node.parentId);
-          img.setAttribute('class',     'favicon');
-          img.setAttribute('draggable', 'true');
-          //board.appendChild(img);
-          main.appendChild(img);
-
-        } else {
-          var img = document.createElement('img');
-          img.setAttribute('src',       '/img/folder.svg');
-          img.setAttribute('title',      node.title);
-          img.setAttribute('id',         idPrefix+node.id);
-          img.setAttribute('data-id',    node.id);
-          img.setAttribute('data-index', node.index);
-          img.setAttribute('data-pid',   node.parentId);
-          img.setAttribute('class',      'folder');
-          img.setAttribute('draggable',  'true');
-          //board.appendChild(img);
-          main.appendChild(img);
-
-          // chrome.bookmarks.getChildren(node.id, function(roots){
-          //  roots.forEach(function (node) {
-          //    outputBookmark(node);
-          //  });
-          // });
-        }
-      }(node));
+      output(node, main);
     });
     board.appendChild(main);
   });
 }
 
+
+var output = function(node, el) {
+  if(typeof node.url !== "undefined") {
+    var img = document.createElement('img');
+    img.setAttribute('src',      'chrome://favicon/'+node.url);
+    img.setAttribute('title',      node.title);
+    img.setAttribute('id',         idPrefix+node.id);
+    img.setAttribute('data-url',   node.url);
+    img.setAttribute('data-id',    node.id);
+    img.setAttribute('data-index', node.index);
+    img.setAttribute('data-pid',   node.parentId);
+    img.setAttribute('class',     'favicon');
+    img.setAttribute('draggable', 'true');
+    el.appendChild(img);
+  } else {
+    var span = document.createElement('span');
+    span.setAttribute('id',         'parentFolder'+node.id);
+    var img  = document.createElement('img');
+    img.setAttribute('src',       '/img/folder.svg');
+    img.setAttribute('title',      node.title);
+    img.setAttribute('id',         idPrefix+node.id);
+    img.setAttribute('data-id',    node.id);
+    img.setAttribute('data-index', node.index);
+    img.setAttribute('data-pid',   node.parentId);
+    img.setAttribute('data-status','close');
+    img.setAttribute('class',      'folder');
+    img.setAttribute('draggable',  'true');
+    //board.appendChild(img);
+    span.appendChild(img);
+    el.appendChild(span);
+    // Recursive
+    // chrome.bookmarks.getChildren(node.id, function(roots){
+    //  roots.forEach(function (node) {
+    //    output(node,el);
+    //  });
+    // });
+  }
+}
+
+
 faviconDisplay(localStorage['useFolderId']);
 
-var link = function(event) {
+var click = function(event) {
   if(event.target.dataset.url) {
     //click favicon
     window.open(event.target.dataset.url, '_blank');  
   }
   else {
-    faviconDisplay(event.target.dataset.id);
+    if(event.target.dataset.status === 'close') {
+      openFolder(event.target.dataset.id);
+    } else {
+      closeFolder(event.target.dataset.id);
+    }
+    //faviconDisplay();
   }
 }
 
-board.addEventListener("click", link, false);
+var openFolder = function(id) {
+  var folderIcon = document.getElementById(idPrefix+id);
+  folderIcon.setAttribute('data-status', 'open');
+  folderIcon.setAttribute('src',       '/img/folder_open.svg');
+  var pSpan       = document.getElementById('parentFolder'+id);
+  var cSpan       = document.createElement('span');
+  cSpan.setAttribute('id','childFolder'+id);
+  pSpan.appendChild(cSpan);
+
+  chrome.bookmarks.getChildren(id, function(roots){
+    roots.forEach(function (node){
+        output(node, cSpan);
+    });
+  });
+}
+var closeFolder = function(id) {
+  var folderIcon = document.getElementById(idPrefix+id);
+  folderIcon.setAttribute('data-status', 'close');
+  folderIcon.setAttribute('src',       '/img/folder.svg');
+  document.getElementById('childFolder'+id).remove();
+}
+
+
+
+
+//events
+board.addEventListener("click", click, false);
 board.addEventListener('dragstart',function(event){
   var el = document.getElementById(event.target.id);
   el.classList.add('draging');
