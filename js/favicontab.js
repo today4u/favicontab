@@ -67,20 +67,22 @@ var output = function(node, el) {
 }
 
 
-faviconDisplay(localStorage['useFolderId']);
-
 var click = function(event) {
   if(event.target.dataset.url) {
     //click favicon
     window.open(event.target.dataset.url, '_blank');  
   }
   else {
-    if(event.target.dataset.status === 'close') {
-      openFolder(event.target.dataset.id);
+    if(localStorage['folderType'] == 1) {
+      if(event.target.dataset.status === 'close') {
+        openFolder(event.target.dataset.id);
+      } else {
+        closeFolder(event.target.dataset.id);
+      }
     } else {
-      closeFolder(event.target.dataset.id);
+      console.log(localStorage['folderType']);
+      faviconDisplay(event.target.dataset.id);
     }
-    //faviconDisplay();
   }
 }
 
@@ -108,6 +110,8 @@ var closeFolder = function(id) {
 
 
 
+//load
+faviconDisplay(localStorage['useFolderId']);
 
 //events
 board.addEventListener("click", click, false);
