@@ -1,6 +1,10 @@
 {
     "placement":[
-        {"id":"auto",  "value":0, "label":"Auto"},
-        {"id":"manual","value":1, "label":"Manual"}
+        {"id":"placement-auto",   "value":0, "label":"Auto"},
+        {"id":"placement-manual", "value":1, "label":"Manual"}
+    ],
+    "folderType": [
+        {"value":0, "label":"Change Screen"},
+        {"value":1, "label":"Open & Close" }
     ]
 }

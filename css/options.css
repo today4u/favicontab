@@ -1,0 +1,6 @@
+fieldset label {
+  display: block;
+}
+fieldset label input[type=radio] {
+  vertical-align:middle;
+}
