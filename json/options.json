@@ -1,6 +1,6 @@
 {
     "placement":[
-        {"id":"placement-auto",   "value":0, "label":"Auto"},
+        {"id":"placement-auto",   "value":0, "label":"Auto"  },
         {"id":"placement-manual", "value":1, "label":"Manual"}
     ],
     "folderType": [

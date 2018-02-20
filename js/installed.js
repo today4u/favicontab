@@ -5,7 +5,7 @@ chrome.runtime.onInstalled.addListener(function() {
     //新規作成フォルダ情報が無い場合は、新規作成し,作成したfolderのidをlocalStorageに保存
     chrome.bookmarks.create({"title": "FaviconTabFolder"},function(newFolder) {
       localStorage['createdFolder'] = newFolder.id;
-      localStorage['useFolderId']   = newFolder.id;
+      localStorage['useFolder']     = newFolder.id;
     });
   }
 });

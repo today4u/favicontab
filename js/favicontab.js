@@ -8,7 +8,7 @@ var faviconDisplay = function(parentId) {
       board.removeChild(board.childNodes[0]); 
     }
     var main = document.createElement('main');
-    if(parentId != localStorage['useFolderId']) {
+    if(parentId != localStorage['useFolder']) {
       chrome.bookmarks.get(String(parentId), function(items) {
         var img = document.createElement('img');
         img.setAttribute('src',       '/img/folder_open.svg');
@@ -111,7 +111,7 @@ var closeFolder = function(id) {
 
 
 //load
-faviconDisplay(localStorage['useFolderId']);
+faviconDisplay(localStorage['useFolder']);
 
 //events
 board.addEventListener("click", click, false);
