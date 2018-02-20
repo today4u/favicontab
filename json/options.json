@@ -1,4 +1,8 @@
 {
+    "linkTarget":[
+        {"value":0, "label":"Same Window", "target":"_self" },
+        {"value":1, "label":"New Window",  "target":"_blank"}
+    ],
     "placement":[
         {"id":"placement-auto",   "value":0, "label":"Auto"  },
         {"id":"placement-manual", "value":1, "label":"Manual"}

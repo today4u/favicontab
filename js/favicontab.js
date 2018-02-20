@@ -70,7 +70,17 @@ var output = function(node, el) {
 var click = function(event) {
   if(event.target.dataset.url) {
     //click favicon
-    window.open(event.target.dataset.url, '_blank');  
+    switch(localStorage["linkTarget"]) {
+      case "0":
+        window.location.href = event.target.dataset.url;
+        break;
+      case "1":
+        window.open(event.target.dataset.url, '_blank');
+        break;
+      default:
+        console.log("default");
+        break;
+    }
   }
   else {
     if(localStorage['folderType'] == 1) {
@@ -80,7 +90,6 @@ var click = function(event) {
         closeFolder(event.target.dataset.id);
       }
     } else {
-      console.log(localStorage['folderType']);
       faviconDisplay(event.target.dataset.id);
     }
   }
@@ -107,8 +116,6 @@ var closeFolder = function(id) {
   folderIcon.setAttribute('src',       '/img/folder.svg');
   document.getElementById('childFolder'+id).remove();
 }
-
-
 
 //load
 faviconDisplay(localStorage['useFolder']);

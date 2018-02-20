@@ -22,6 +22,7 @@ xhr.onreadystatechange = function() {
     var data = JSON.parse(xhr.responseText);
     buildOptionSettingRadio("placement",  data.placement);
     buildOptionSettingRadio("folderType", data.folderType);
+    buildOptionSettingRadio("linkTarget", data.linkTarget);
   }
 }
 xhr.open("GET",jsonPath, true);
