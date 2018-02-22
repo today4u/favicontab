@@ -1,16 +1,16 @@
-var idPrefix = 'bid'
+const idPrefix = 'bid'
 document.body.style.backgroundColor = localStorage['backgroundColor'];
-var board = document.getElementById("board");
+const board = document.getElementById("board");
 
-var faviconDisplay = function(parentId) {
+const faviconDisplay = function(parentId) {
   chrome.bookmarks.getChildren(parentId,function(roots){
     if(board.childNodes[0]) {
       board.removeChild(board.childNodes[0]); 
     }
-    var main = document.createElement('main');
+    const main = document.createElement('main');
     if(parentId != localStorage['useFolder']) {
       chrome.bookmarks.get(String(parentId), function(items) {
-        var img = document.createElement('img');
+        const img = document.createElement('img');
         img.setAttribute('src',       '/img/folder_open.svg');
         img.setAttribute('class',      'folder');
         img.setAttribute('id',         idPrefix+items[0].parentId);
@@ -28,9 +28,9 @@ var faviconDisplay = function(parentId) {
 }
 
 
-var output = function(node, el) {
+const output = function(node, el) {
   if(typeof node.url !== "undefined") {
-    var img = document.createElement('img');
+    const img = document.createElement('img');
     img.setAttribute('src',      'chrome://favicon/'+node.url);
     img.setAttribute('title',      node.title);
     img.setAttribute('id',         idPrefix+node.id);
@@ -42,9 +42,9 @@ var output = function(node, el) {
     img.setAttribute('draggable', 'true');
     el.appendChild(img);
   } else {
-    var span = document.createElement('span');
+    const span = document.createElement('span');
     span.setAttribute('id',         'parentFolder'+node.id);
-    var img  = document.createElement('img');
+    const img  = document.createElement('img');
     img.setAttribute('src',       '/img/folder.svg');
     img.setAttribute('title',      node.title);
     img.setAttribute('id',         idPrefix+node.id);
@@ -67,7 +67,7 @@ var output = function(node, el) {
 }
 
 
-var click = function(event) {
+const click = function(event) {
   if(event.target.dataset.url) {
     //click favicon
     switch(localStorage["linkTarget"]) {
@@ -95,12 +95,12 @@ var click = function(event) {
   }
 }
 
-var openFolder = function(id) {
-  var folderIcon = document.getElementById(idPrefix+id);
+const openFolder = function(id) {
+  const folderIcon = document.getElementById(idPrefix+id);
   folderIcon.setAttribute('data-status', 'open');
   folderIcon.setAttribute('src',       '/img/folder_open.svg');
-  var pSpan       = document.getElementById('parentFolder'+id);
-  var cSpan       = document.createElement('span');
+  const pSpan       = document.getElementById('parentFolder'+id);
+  const cSpan       = document.createElement('span');
   cSpan.setAttribute('id','childFolder'+id);
   pSpan.appendChild(cSpan);
 
@@ -110,8 +110,8 @@ var openFolder = function(id) {
     });
   });
 }
-var closeFolder = function(id) {
-  var folderIcon = document.getElementById(idPrefix+id);
+const closeFolder = function(id) {
+  const folderIcon = document.getElementById(idPrefix+id);
   folderIcon.setAttribute('data-status', 'close');
   folderIcon.setAttribute('src',       '/img/folder.svg');
   document.getElementById('childFolder'+id).remove();
@@ -123,7 +123,7 @@ faviconDisplay(localStorage['useFolder']);
 //events
 board.addEventListener("click", click, false);
 board.addEventListener('dragstart',function(event){
-  var el = document.getElementById(event.target.id);
+  const el = document.getElementById(event.target.id);
   el.classList.add('draging');
 },false);
 board.addEventListener('dragover',function(event){
@@ -131,9 +131,9 @@ board.addEventListener('dragover',function(event){
   event.dataTransfer.dropEffect = 'move';
 },false);
 board.addEventListener('drop',   function(event){
-  var el = document.getElementsByClassName('draging');
-  var bookmarkId  = el[0].dataset.id;
-  var changeIndex = Number(event.target.dataset.index);
+  const el = document.getElementsByClassName('draging');
+  const bookmarkId  = el[0].dataset.id;
+  let   changeIndex = Number(event.target.dataset.index);
   //
   if(event.target.dataset.url) {
     //to favicon
@@ -149,7 +149,7 @@ board.addEventListener('drop',   function(event){
   faviconDisplay(event.target.dataset.pid);
 },false);
 board.addEventListener('dragend',function(event){
-  var el = document.getElementById(event.target.id);
+  const el = document.getElementById(event.target.id);
   el.classList.remove("draging");
 },false);
 
