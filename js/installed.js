@@ -1,12 +1,42 @@
+//Init Folder
+const INIT_FOLDER_TITLE = 'FaviconTabFolder';
+
 //拡張機能インストール時に実行
 chrome.runtime.onInstalled.addListener(function() {
-//localstorageにinstall時に新規作成したフォルダ情報があるかチェック
-  if(typeof localStorage.createdFolder === "undefined") {
-    //新規作成フォルダ情報が無い場合は、新規作成し,作成したfolderのidをlocalStorageに保存
-    chrome.bookmarks.create({"title": "FaviconTabFolder"},function(newFolder) {
-      localStorage['createdFolder'] = newFolder.id;
-      localStorage['useFolder']     = newFolder.id;
+  //初期値をセット
+  console.log(localStorage);
+  localStorage.setItem('backgroundColor', '#ffffff');
+  localStorage.setItem('linkTarget',      0);
+  localStorage.setItem('placement',       0);
+  localStorage.setItem('folderType',      0);
+  //useFolder
+  setUseFolder = function() {
+    return new Promise(function(resolve, reject) {
+      chrome.bookmarks.getTree(function(roots){
+        var folders  = []; 
+        roots.forEach(parser);
+        function parser(node){
+          if (node.children) {
+            if(node.title === INIT_FOLDER_TITLE) {
+              resolve(node.id);
+              return true;
+            }
+            node.children.forEach(parser);
+          }
+        }
+        reject();
+      });
     });
   }
+  setUseFolder().then(function(id){
+    //resolve
+    localStorage.setItem('useFolder', id);
+  },function(){
+    //reject
+    //新規作成フォルダ情報が無い場合は、新規作成し,作成したfolderのidをlocalStorageに保存
+    chrome.bookmarks.create({"title": INIT_FOLDER_TITLE},function(newFolder) {
+      localStorage.setItem('useFolder', newFolder.id);
+    });
+  });
 });
 
