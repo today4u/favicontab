@@ -4,13 +4,26 @@ body {
 #favicons {
   overflow: hidden;
 }
-.favicon {
+
+#board .favicon {
     margin: 10px;
     width: 16px;
-    height: 16px;  
+    height: 16px;
     vertical-align:bottom;
 }
-.folder {
+#board .folder {
+    margin: 8px;
+    width: 20px;
+    height: 20px;
+    vertical-align:bottom;
+}
+
+#reserve .favicon {
+    width: 16px;
+    height: 16px;
+    vertical-align:bottom;
+}
+#reserve .folder {
     margin: 8px;
     width: 20px;
     height: 20px;

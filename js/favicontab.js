@@ -1,13 +1,40 @@
 const idPrefix = 'bid'
 document.body.style.backgroundColor = localStorage['backgroundColor'];
-const board = document.getElementById("board");
+const board   = document.getElementById("board");
+const reserve = document.getElementById("reserve");
 
 const faviconDisplay = function(parentId) {
   chrome.bookmarks.getChildren(parentId,function(roots){
     if(board.childNodes[0]) {
       board.removeChild(board.childNodes[0]); 
     }
-    const main = document.createElement('main');
+    const mainBoard = document.createElement('main');
+    if(parentId != localStorage['useFolder']) {
+      chrome.bookmarks.get(String(parentId), function(items) {
+        const img = document.createElement('img');
+        img.setAttribute('src',       '/img/folder_open.svg');
+        img.setAttribute('class',      'folder');
+        img.setAttribute('id',         idPrefix+items[0].parentId);
+        img.setAttribute('data-id',    items[0].parentId);
+        img.setAttribute('class',      'folder');
+        img.setAttribute('draggable',  'false');
+        mainBoard.insertBefore(img, mainBoard.firstChild);
+      });
+    }
+    roots.forEach(function (node){
+      output(node, mainBoard);
+    });
+    board.appendChild(mainBoard);
+  });
+}
+
+const facviconDisplayManual = function(parentId) {
+  console.log('Manual');
+  const positions    = JSON.parse(localStorage.getItem('positions'));
+  let   setPositions = {};
+  chrome.bookmarks.getChildren(parentId,function(roots){
+    const mainBoard      = document.createElement('main');
+    const mainReserve    = document.createElement('main');
     if(parentId != localStorage['useFolder']) {
       chrome.bookmarks.get(String(parentId), function(items) {
         const img = document.createElement('img');
@@ -17,13 +44,19 @@ const faviconDisplay = function(parentId) {
         img.setAttribute('data-id',    items[0].parentId);
         img.setAttribute('class',      'folder');
         img.setAttribute('draggable', 'false');
-        main.insertBefore(img, main.firstChild);
+        mainReserve.insertBefore(img, mainReserve.firstChild);
       });
     }
     roots.forEach(function (node){
-      output(node, main);
+      if(typeof positions[node.id] === "undefined") {
+        output(node, reserve);
+      } else {
+        setPositions[node.id] = positions[node.id]; 
+        output(node, board);
+      }
     });
-    board.appendChild(main);
+    console.log(setPositions);
+    localStorage.setItem("positions", JSON.stringify(setPositions)); //refresh
   });
 }
 
@@ -118,7 +151,12 @@ const closeFolder = function(id) {
 }
 
 //load
-faviconDisplay(localStorage['useFolder']);
+if(localStorage['placement'] === '0') {
+  console.log(localStorage);
+  faviconDisplay(localStorage['useFolder']);  
+} else {
+  facviconDisplayManual(localStorage['useFolder']);
+}
 
 //events
 board.addEventListener("click", click, false);
@@ -152,4 +190,7 @@ board.addEventListener('dragend',function(event){
   const el = document.getElementById(event.target.id);
   el.classList.remove("draging");
 },false);
+
+//debug
+console.log(localStorage["positions"])
 
