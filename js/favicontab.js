@@ -2,6 +2,9 @@ const idPrefix = 'bid'
 document.body.style.backgroundColor = localStorage['backgroundColor'];
 const board   = document.getElementById("board");
 const reserve = document.getElementById("reserve");
+if(localStorage['placement'] === "1") {
+  board.classList.add('position');
+}
 
 const faviconDisplay = function(parentId) {
   chrome.bookmarks.getChildren(parentId,function(roots){
@@ -29,12 +32,11 @@ const faviconDisplay = function(parentId) {
 }
 
 const facviconDisplayManual = function(parentId) {
-  console.log('Manual');
   const positions    = JSON.parse(localStorage.getItem('positions'));
   let   setPositions = {};
   chrome.bookmarks.getChildren(parentId,function(roots){
     const mainBoard      = document.createElement('main');
-    const mainReserve    = document.createElement('main');
+    const divReserve    = document.createElement('main');
     if(parentId != localStorage['useFolder']) {
       chrome.bookmarks.get(String(parentId), function(items) {
         const img = document.createElement('img');
@@ -44,18 +46,19 @@ const facviconDisplayManual = function(parentId) {
         img.setAttribute('data-id',    items[0].parentId);
         img.setAttribute('class',      'folder');
         img.setAttribute('draggable', 'false');
-        mainReserve.insertBefore(img, mainReserve.firstChild);
+        divReserve.insertBefore(img, divReserve.firstChild);
       });
     }
     roots.forEach(function (node){
       if(typeof positions[node.id] === "undefined") {
-        output(node, reserve);
+        output(node, divReserve);
       } else {
         setPositions[node.id] = positions[node.id]; 
-        output(node, board);
+        output(node, mainBoard);
       }
     });
-    console.log(setPositions);
+    reserve.appendChild(divReserve);
+    board.appendChild(mainBoard);
     localStorage.setItem("positions", JSON.stringify(setPositions)); //refresh
   });
 }
@@ -101,6 +104,7 @@ const output = function(node, el) {
 
 
 const click = function(event) {
+  console.log("click!");
   if(event.target.dataset.url) {
     //click favicon
     switch(localStorage["linkTarget"]) {
@@ -116,16 +120,51 @@ const click = function(event) {
     }
   }
   else {
-    if(localStorage['folderType'] == 1) {
+    if(localStorage['folderType'] === "1" && localStorage['placement'] === "0") {
       if(event.target.dataset.status === 'close') {
         openFolder(event.target.dataset.id);
       } else {
         closeFolder(event.target.dataset.id);
       }
     } else {
-      faviconDisplay(event.target.dataset.id);
+      if(localStorage['placement'] === '0') {
+        faviconDisplay(event.target.dataset.id);
+      } else {
+        facviconDisplayManual
+      }
     }
   }
+}
+
+const dragstart = function(event){
+  const el = document.getElementById(event.target.id);
+  el.classList.add('draging');
+}
+const dragover = function(event){
+  event.preventDefault();
+  event.dataTransfer.dropEffect = 'move';
+}
+const drop = function(event){
+  const el = document.getElementsByClassName('draging');
+  const bookmarkId  = el[0].dataset.id;
+  let   changeIndex = Number(event.target.dataset.index);
+  //
+  if(event.target.dataset.url) {
+    //to favicon
+    if(event.target.dataset.index > el[0].dataset.index) {
+      changeIndex =  changeIndex+1;
+    }
+    chrome.bookmarks.move(bookmarkId, {"index": changeIndex});
+  }
+  else {
+    //to folder
+    chrome.bookmarks.move(bookmarkId, {"parentId": event.target.dataset.id});
+  }
+  faviconDisplay(event.target.dataset.pid);
+}
+const dragend = function(event){
+  const el = document.getElementById(event.target.id);
+  el.classList.remove("draging");
 }
 
 const openFolder = function(id) {
@@ -150,6 +189,14 @@ const closeFolder = function(id) {
   document.getElementById('childFolder'+id).remove();
 }
 
+//events
+board.addEventListener("click",    click, false);
+board.addEventListener('dragstart',dragstart,false);
+board.addEventListener('dragover', dragover,false);
+board.addEventListener('drop',     drop,false);
+board.addEventListener('dragend',  dragend,false);
+reserve.addEventListener("click", click, false);
+
 //load
 if(localStorage['placement'] === '0') {
   console.log(localStorage);
@@ -157,40 +204,3 @@ if(localStorage['placement'] === '0') {
 } else {
   facviconDisplayManual(localStorage['useFolder']);
 }
-
-//events
-board.addEventListener("click", click, false);
-board.addEventListener('dragstart',function(event){
-  const el = document.getElementById(event.target.id);
-  el.classList.add('draging');
-},false);
-board.addEventListener('dragover',function(event){
-  event.preventDefault();
-  event.dataTransfer.dropEffect = 'move';
-},false);
-board.addEventListener('drop',   function(event){
-  const el = document.getElementsByClassName('draging');
-  const bookmarkId  = el[0].dataset.id;
-  let   changeIndex = Number(event.target.dataset.index);
-  //
-  if(event.target.dataset.url) {
-    //to favicon
-    if(event.target.dataset.index > el[0].dataset.index) {
-      changeIndex =  changeIndex+1;
-    }
-    chrome.bookmarks.move(bookmarkId, {"index": changeIndex});
-  }
-  else {
-    //to folder
-    chrome.bookmarks.move(bookmarkId, {"parentId": event.target.dataset.id});
-  }
-  faviconDisplay(event.target.dataset.pid);
-},false);
-board.addEventListener('dragend',function(event){
-  const el = document.getElementById(event.target.id);
-  el.classList.remove("draging");
-},false);
-
-//debug
-console.log(localStorage["positions"])
-

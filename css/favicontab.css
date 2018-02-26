@@ -1,5 +1,7 @@
 body {
-  background-color:#ddd;
+  background-color:#ddd; 
+  margin:0;
+  padding:0;
 }
 #favicons {
   overflow: hidden;
@@ -8,7 +10,7 @@ body {
 #board .favicon {
     margin: 10px;
     width: 16px;
-    height: 16px;
+    height: 16px;  
     vertical-align:bottom;
 }
 #board .folder {
@@ -18,14 +20,16 @@ body {
     vertical-align:bottom;
 }
 
+#reserve {
+    background-color:#ddd;
+}
 #reserve .favicon {
     width: 16px;
-    height: 16px;
+    height: 16px;  
     vertical-align:bottom;
 }
 #reserve .folder {
-    margin: 8px;
-    width: 20px;
-    height: 20px;
+    width: 16px;
+    height: 16px;
     vertical-align:bottom;
 }
