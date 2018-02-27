@@ -137,17 +137,26 @@ const click = function(event) {
 }
 
 const dragstart = function(event){
+  console.log("dragstart")
+  console.log(event)
   const el = document.getElementById(event.target.id);
   el.classList.add('draging');
 }
 const dragover = function(event){
+  console.log("drag")
+  console.log(event)
   event.preventDefault();
   event.dataTransfer.dropEffect = 'move';
 }
 const drop = function(event){
+  console.log("drop")
+  console.log(event)
   const el = document.getElementsByClassName('draging');
   const bookmarkId  = el[0].dataset.id;
   let   changeIndex = Number(event.target.dataset.index);
+  if(localStorage['placement'] === "1") {
+      return;
+  }
   //
   if(event.target.dataset.url) {
     //to favicon
@@ -163,6 +172,8 @@ const drop = function(event){
   faviconDisplay(event.target.dataset.pid);
 }
 const dragend = function(event){
+  console.log("dragend")
+  console.log(event)
   const el = document.getElementById(event.target.id);
   el.classList.remove("draging");
 }
@@ -190,13 +201,16 @@ const closeFolder = function(id) {
 }
 
 //events
-board.addEventListener("click",    click, false);
-board.addEventListener('dragstart',dragstart,false);
-board.addEventListener('dragover', dragover,false);
-board.addEventListener('drop',     drop,false);
-board.addEventListener('dragend',  dragend,false);
-reserve.addEventListener("click", click, false);
-
+board.addEventListener("click",      click,    false);
+board.addEventListener('dragstart',  dragstart,false);
+board.addEventListener('dragover',   dragover, false);
+board.addEventListener('drop',       drop,     false);
+//board.addEventListener('dragend',    dragend,  false);
+reserve.addEventListener("click",    click,    false);
+reserve.addEventListener('dragstart',dragstart,false);
+reserve.addEventListener('dragover', dragover, false);
+//reserve.addEventListener('drop',     drop,     false);
+reserve.addEventListener('dragend',  dragend,  false);
 //load
 if(localStorage['placement'] === '0') {
   console.log(localStorage);
