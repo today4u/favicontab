@@ -8,7 +8,7 @@
         {"id":"placement-manual", "value":1, "label":"Manual"}
     ],
     "folderType": [
-        {"value":0, "label":"Change Screen"},
-        {"value":1, "label":"Open & Close" }
+        {"id":"folderType0", "value":0, "label":"Change Screen"},
+        {"id":"folderType1", "value":1, "label":"Open & Close" }
     ]
 }

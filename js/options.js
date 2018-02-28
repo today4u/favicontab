@@ -47,6 +47,9 @@ function buildOptionSettingRadio (name, dataObject) { //
     input.setAttribute('value', node.value);
     input.setAttribute('type', 'radio');
     input.setAttribute('name', name);
+    if(typeof node.id !== "undefined") {
+      input.setAttribute('id', node.id);
+    }
     if(localStorage[name] == node.value) {
         input.setAttribute('checked', 'checked');
     }
@@ -59,9 +62,23 @@ function buildOptionSettingRadio (name, dataObject) { //
       return;
     }
     localStorage[name] = clickEvent.target.value;
-    console.log(localStorage[name]);
+    valueControl(name, clickEvent.target.value);
   });
 }
-
-
-console.log(localStorage)
+const valueControl = function(name, value) {
+   switch(name) {
+      case 'placement':
+        const folderType = document.getElementById('folderType');
+        if(value === "1") {
+          localStorage.setItem('folderType',0);
+          document.getElementById('folderType0').checked = true;
+          folderType.setAttribute('disabled','disabled');
+        } else {
+          folderType.removeAttribute('disabled');
+        }
+        console.log(folderType.child);
+        break;
+      default:
+        break;
+   }
+}
