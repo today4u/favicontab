@@ -1,7 +1,9 @@
 const idPrefix = 'bid'
 document.body.style.backgroundColor = localStorage['backgroundColor'];
-const board   = document.getElementById("board");
-const reserve = document.getElementById("reserve");
+const board      = document.getElementById("board");
+const mainBoard  = document.createElement('main');
+const reserve    = document.getElementById("reserve");
+const divReserve = document.createElement('main');
 if(localStorage['placement'] === "1") {
   board.classList.add('position');
 }
@@ -11,7 +13,6 @@ const faviconDisplay = function(parentId) {
     if(board.childNodes[0]) {
       board.removeChild(board.childNodes[0]); 
     }
-    const mainBoard = document.createElement('main');
     if(parentId != localStorage['useFolder']) {
       chrome.bookmarks.get(String(parentId), function(items) {
         const img = document.createElement('img');
@@ -35,8 +36,7 @@ const facviconDisplayManual = function(parentId) {
   const positions    = JSON.parse(localStorage.getItem('positions'));
   let   setPositions = {};
   chrome.bookmarks.getChildren(parentId,function(roots){
-    const mainBoard      = document.createElement('main');
-    const divReserve    = document.createElement('main');
+    mainBoard.setAttribute('position','relative');
     if(parentId != localStorage['useFolder']) {
       chrome.bookmarks.get(String(parentId), function(items) {
         const img = document.createElement('img');
@@ -49,17 +49,24 @@ const facviconDisplayManual = function(parentId) {
         divReserve.insertBefore(img, divReserve.firstChild);
       });
     }
+    //loop
     roots.forEach(function (node){
+
       if(typeof positions[node.id] === "undefined") {
-        output(node, divReserve);
+        icon = output(node, divReserve);
+        
       } else {
-        setPositions[node.id] = positions[node.id]; 
-        output(node, mainBoard);
+        //保存用
+        setPositions[node.id] = positions[node.id];
+        let posi = positions[node.id].split(',');
+        //出力
+        const icon = output(node, mainBoard);
+        icon.setAttribute('style','position:absolute;top:'+posi[0]+'px;left:'+posi[1]+'px;');
       }
     });
     reserve.appendChild(divReserve);
     board.appendChild(mainBoard);
-    localStorage.setItem("positions", JSON.stringify(setPositions)); //refresh
+    //localStorage.setItem("positions", JSON.stringify(setPositions)); //refresh
   });
 }
 
@@ -77,6 +84,7 @@ const output = function(node, el) {
     img.setAttribute('class',     'favicon');
     img.setAttribute('draggable', 'true');
     el.appendChild(img);
+    return img;
   } else {
     const span = document.createElement('span');
     span.setAttribute('id',         'parentFolder'+node.id);
@@ -93,6 +101,7 @@ const output = function(node, el) {
     //board.appendChild(img);
     span.appendChild(img);
     el.appendChild(span);
+    return img;
     // Recursive
     // chrome.bookmarks.getChildren(node.id, function(roots){
     //  roots.forEach(function (node) {
@@ -143,14 +152,19 @@ const dragstart = function(event){
   el.classList.add('draging');
 }
 const dragover = function(event){
-  console.log("drag")
-  console.log(event)
+  // console.log("drag")
+  // console.log(event)
   event.preventDefault();
   event.dataTransfer.dropEffect = 'move';
 }
 const drop = function(event){
   console.log("drop")
-  console.log(event)
+  //console.log(event)
+  console.log('offset: '+event.offsetX+','+event.offsetY);
+  console.log('page: '+event.pageX+','+event.pageY);
+  console.log('layer: '+event.layerX+','+event.layerY);
+  console.log('client: '+event.clientX+','+event.clientY);
+  console.log('x,y: '+event.x+','+event.y);
   const el = document.getElementsByClassName('draging');
   const bookmarkId  = el[0].dataset.id;
   let   changeIndex = Number(event.target.dataset.index);
@@ -172,8 +186,8 @@ const drop = function(event){
   faviconDisplay(event.target.dataset.pid);
 }
 const dragend = function(event){
-  console.log("dragend")
-  console.log(event)
+  // console.log("dragend")
+  // console.log(event)
   const el = document.getElementById(event.target.id);
   el.classList.remove("draging");
 }
@@ -218,3 +232,7 @@ if(localStorage['placement'] === '0') {
 } else {
   facviconDisplayManual(localStorage['useFolder']);
 }
+
+//debug
+localStorage.setItem('positions','{"440":"100,100", "688":"50,50"}');
+
