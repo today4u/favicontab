@@ -1,4 +1,5 @@
-const idPrefix = 'bid'
+const idPrefix  = 'bid'
+const keyPrefix = 'positions';
 document.body.style.backgroundColor = localStorage['backgroundColor'];
 const board      = document.getElementById("board");
 const mainBoard  = document.createElement('main');
@@ -33,7 +34,10 @@ const faviconDisplay = function(parentId) {
 }
 
 const facviconDisplayManual = function(parentId) {
-  const positions    = JSON.parse(localStorage.getItem('positions'));
+  const storageKey = keyPrefix+parentId;
+  console.log(storageKey);
+  board.setAttribute('style','position:absolute');
+  const positions    = JSON.parse(localStorage.getItem(storageKey));
   let   setPositions = {};
   chrome.bookmarks.getChildren(parentId,function(roots){
     mainBoard.setAttribute('position','relative');
@@ -51,11 +55,11 @@ const facviconDisplayManual = function(parentId) {
     }
     //loop
     roots.forEach(function (node){
-
-      if(typeof positions[node.id] === "undefined") {
+      if(!positions || typeof positions[node.id] === "undefined") {
+        //reserve
         icon = output(node, divReserve);
-        
       } else {
+        //board
         //保存用
         setPositions[node.id] = positions[node.id];
         let posi = positions[node.id].split(',');
@@ -66,7 +70,8 @@ const facviconDisplayManual = function(parentId) {
     });
     reserve.appendChild(divReserve);
     board.appendChild(mainBoard);
-    //localStorage.setItem("positions", JSON.stringify(setPositions)); //refresh
+    console.log(JSON.stringify(setPositions));
+    localStorage.setItem(storageKey, JSON.stringify(setPositions)); //refresh
   });
 }
 
@@ -225,6 +230,7 @@ reserve.addEventListener('dragstart',dragstart,false);
 reserve.addEventListener('dragover', dragover, false);
 //reserve.addEventListener('drop',     drop,     false);
 reserve.addEventListener('dragend',  dragend,  false);
+
 //load
 if(localStorage['placement'] === '0') {
   console.log(localStorage);
@@ -234,5 +240,4 @@ if(localStorage['placement'] === '0') {
 }
 
 //debug
-localStorage.setItem('positions','{"440":"100,100", "688":"50,50"}');
-
+console.log(localStorage)
