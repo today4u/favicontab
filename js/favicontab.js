@@ -4,7 +4,7 @@ document.body.style.backgroundColor = localStorage['backgroundColor'];
 const board      = document.getElementById("board");
 const mainBoard  = document.createElement('main');
 const reserve    = document.getElementById("reserve");
-const divReserve = document.createElement('main');
+const divReserve = document.createElement('div');
 if(localStorage['placement'] === "1") {
   board.classList.add('position');
 }
@@ -35,7 +35,6 @@ const faviconDisplay = function(parentId) {
 
 const facviconDisplayManual = function(parentId) {
   const storageKey = keyPrefix+parentId;
-  console.log(storageKey);
   board.setAttribute('style','position:absolute');
   const positions    = JSON.parse(localStorage.getItem(storageKey));
   let   setPositions = {};
@@ -118,7 +117,9 @@ const output = function(node, el) {
 
 
 const click = function(event) {
-  console.log("click!");
+  if(event.target.dataset.id === undefined) {
+    return false;
+  }
   if(event.target.dataset.url) {
     //click favicon
     switch(localStorage["linkTarget"]) {
@@ -144,7 +145,7 @@ const click = function(event) {
       if(localStorage['placement'] === '0') {
         faviconDisplay(event.target.dataset.id);
       } else {
-        facviconDisplayManual
+        facviconDisplayManual();
       }
     }
   }
