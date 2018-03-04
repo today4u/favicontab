@@ -20,22 +20,8 @@ body {
     vertical-align:bottom;
 }
 #board > main .folder {
-    margin: 8px;
-    width: 20px;
-    height: 20px;
-    vertical-align:bottom;
-}
-
-#reserve {
-    background-color:#ddd;
-}
-#reserve .favicon {
-    width: 16px;
-    height: 16px;  
-    vertical-align:bottom;
-}
-#reserve .folder {
     width: 16px;
     height: 16px;
     vertical-align:bottom;
 }
+
