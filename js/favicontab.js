@@ -2,15 +2,17 @@ const idPrefix  = 'bid'
 const keyPrefix = 'positions';
 document.body.style.backgroundColor = localStorage['backgroundColor'];
 const board      = document.getElementById("board");
-const mainBoard  = document.createElement('main');
-const reserve    = document.getElementById("reserve");
-const divReserve = document.createElement('div');
+
+
+var x,y;
+let setPositions = {};
 if(localStorage['placement'] === "1") {
   board.classList.add('position');
 }
 
 const faviconDisplay = function(parentId) {
   chrome.bookmarks.getChildren(parentId,function(roots){
+    const mainBoard  = document.createElement('main');
     if(board.childNodes[0]) {
       board.removeChild(board.childNodes[0]); 
     }
@@ -37,7 +39,7 @@ const facviconDisplayManual = function(parentId) {
   const storageKey = keyPrefix+parentId;
   board.setAttribute('style','position:absolute');
   const positions    = JSON.parse(localStorage.getItem(storageKey));
-  let   setPositions = {};
+  
   chrome.bookmarks.getChildren(parentId,function(roots){
     mainBoard.setAttribute('position','relative');
     if(parentId != localStorage['useFolder']) {
@@ -49,17 +51,16 @@ const facviconDisplayManual = function(parentId) {
         img.setAttribute('data-id',    items[0].parentId);
         img.setAttribute('class',      'folder');
         img.setAttribute('draggable', 'false');
-        divReserve.insertBefore(img, divReserve.firstChild);
+        mainBoard.insertBefore(img, mainBoard.firstChild);
       });
     }
     //loop
     roots.forEach(function (node){
       if(!positions || typeof positions[node.id] === "undefined") {
-        //reserve
-        icon = output(node, divReserve);
+        //座標なし
+        icon = output(node, mainBoard);
       } else {
-        //board
-        //保存用
+        //座標あり
         setPositions[node.id] = positions[node.id];
         let posi = positions[node.id].split(',');
         //出力
@@ -67,54 +68,45 @@ const facviconDisplayManual = function(parentId) {
         icon.setAttribute('style','position:absolute;top:'+posi[0]+'px;left:'+posi[1]+'px;');
       }
     });
-    reserve.appendChild(divReserve);
     board.appendChild(mainBoard);
-    console.log(JSON.stringify(setPositions));
     localStorage.setItem(storageKey, JSON.stringify(setPositions)); //refresh
   });
 }
 
 
 const output = function(node, el) {
+  const img  = document.createElement('img');
+  img.addEventListener("dragstart", dragstart, false);
+  img.setAttribute('id',         idPrefix+node.id);
+  img.setAttribute('title',      node.title);
+  img.setAttribute('data-id',    node.id);
+  img.setAttribute('data-index', node.index);
+  img.setAttribute('data-pid',   node.parentId);
+  img.setAttribute('draggable', 'true');
   if(typeof node.url !== "undefined") {
-    const img = document.createElement('img');
+    //favicon
     img.setAttribute('src',      'chrome://favicon/'+node.url);
-    img.setAttribute('title',      node.title);
-    img.setAttribute('id',         idPrefix+node.id);
-    img.setAttribute('data-url',   node.url);
-    img.setAttribute('data-id',    node.id);
-    img.setAttribute('data-index', node.index);
-    img.setAttribute('data-pid',   node.parentId);
     img.setAttribute('class',     'favicon');
-    img.setAttribute('draggable', 'true');
+    img.setAttribute('data-url',   node.url);
+    //
     el.appendChild(img);
-    return img;
   } else {
-    const span = document.createElement('span');
-    span.setAttribute('id',         'parentFolder'+node.id);
-    const img  = document.createElement('img');
-    img.setAttribute('src',       '/img/folder.svg');
-    img.setAttribute('title',      node.title);
-    img.setAttribute('id',         idPrefix+node.id);
-    img.setAttribute('data-id',    node.id);
-    img.setAttribute('data-index', node.index);
-    img.setAttribute('data-pid',   node.parentId);
-    img.setAttribute('data-status','close');
-    img.setAttribute('class',      'folder');
-    img.setAttribute('draggable',  'true');
-    //board.appendChild(img);
-    span.appendChild(img);
-    el.appendChild(span);
-    return img;
-    // Recursive
-    // chrome.bookmarks.getChildren(node.id, function(roots){
-    //  roots.forEach(function (node) {
-    //    output(node,el);
-    //  });
-    // });
+    //folder
+    img.setAttribute('src',         '/img/folder.svg');
+    img.setAttribute('class',       'folder');
+    img.setAttribute('data-status', 'close');
+    if(localStorage['placement'] === "0") {
+      //span
+      const span = document.createElement('span');
+      span.setAttribute('id',         'parentFolder'+node.id);
+      span.appendChild(img);
+      el.appendChild(span);
+    } else {
+      el.appendChild(img);
+    }
   }
+  return img;
 }
-
 
 const click = function(event) {
   if(event.target.dataset.id === undefined) {
@@ -130,7 +122,6 @@ const click = function(event) {
         window.open(event.target.dataset.url, '_blank');
         break;
       default:
-        console.log("default");
         break;
     }
   }
@@ -138,13 +129,16 @@ const click = function(event) {
     if(localStorage['folderType'] === "1" && localStorage['placement'] === "0") {
       if(event.target.dataset.status === 'close') {
         openFolder(event.target.dataset.id);
-      } else {
+      } 
+      else {
         closeFolder(event.target.dataset.id);
       }
-    } else {
+    } 
+    else {
       if(localStorage['placement'] === '0') {
         faviconDisplay(event.target.dataset.id);
-      } else {
+      } 
+      else {
         facviconDisplayManual();
       }
     }
@@ -152,32 +146,56 @@ const click = function(event) {
 }
 
 const dragstart = function(event){
-  console.log("dragstart")
-  console.log(event)
   const el = document.getElementById(event.target.id);
   el.classList.add('draging');
+  x = event.pageX - this.offsetLeft;
+  y = event.pageY - this.offsetTop;
+  el.addEventListener("drag", drag, false);
 }
+
+const drag = function(event) {
+  var drag = document.getElementsByClassName("draging");
+  drag[0].style.position = 'absolute';
+  drag[0].style.top      = event.pageY - y + "px";
+  drag[0].style.left     = event.pageX - x + "px";
+  drag[0].addEventListener("dragend", dragend,  false);
+  drag[0].addEventListener("dragover",dragover, false);
+}
+
+const dragend = function(event){
+  var drag = document.getElementsByClassName("draging");
+  if(localStorage['placement'] === "1") {
+    var top  = drag[0].style.top.slice(0, -2);
+    var left = drag[0].style.left.slice(0,-2);
+    if(Number(left) < 0 || Number(top) < 0 ) {
+      if(setPositions[event.target.dataset.id]) {
+        var posi = setPositions[event.target.dataset.id].split(',');
+        drag[0].style.top      = posi[0]+"px";
+        drag[0].style.left     = posi[1]+"px";
+      } else {
+        drag[0].style.position = 'none';
+        drag[0].style.top      = null;
+        drag[0].style.left     = null;
+      }
+    } else {
+      const storageKey = keyPrefix+event.target.dataset.pid;
+      setPositions[event.target.dataset.id] = top+','+left; 
+      localStorage.setItem(storageKey, JSON.stringify(setPositions));
+    }
+  }
+  drag[0].classList.remove("draging");
+}
+
+
 const dragover = function(event){
-  // console.log("drag")
-  // console.log(event)
   event.preventDefault();
   event.dataTransfer.dropEffect = 'move';
 }
+
 const drop = function(event){
-  console.log("drop")
-  //console.log(event)
-  console.log('offset: '+event.offsetX+','+event.offsetY);
-  console.log('page: '+event.pageX+','+event.pageY);
-  console.log('layer: '+event.layerX+','+event.layerY);
-  console.log('client: '+event.clientX+','+event.clientY);
-  console.log('x,y: '+event.x+','+event.y);
   const el = document.getElementsByClassName('draging');
   const bookmarkId  = el[0].dataset.id;
   let   changeIndex = Number(event.target.dataset.index);
-  if(localStorage['placement'] === "1") {
-      return;
-  }
-  //
   if(event.target.dataset.url) {
     //to favicon
     if(event.target.dataset.index > el[0].dataset.index) {
@@ -191,12 +209,8 @@ const drop = function(event){
   }
   faviconDisplay(event.target.dataset.pid);
 }
-const dragend = function(event){
-  // console.log("dragend")
-  // console.log(event)
-  const el = document.getElementById(event.target.id);
-  el.classList.remove("draging");
-}
+
+
 
 const openFolder = function(id) {
   const folderIcon = document.getElementById(idPrefix+id);
@@ -221,16 +235,12 @@ const closeFolder = function(id) {
 }
 
 //events
-board.addEventListener("click",      click,    false);
-board.addEventListener('dragstart',  dragstart,false);
-board.addEventListener('dragover',   dragover, false);
-board.addEventListener('drop',       drop,     false);
-//board.addEventListener('dragend',    dragend,  false);
-reserve.addEventListener("click",    click,    false);
-reserve.addEventListener('dragstart',dragstart,false);
-reserve.addEventListener('dragover', dragover, false);
-//reserve.addEventListener('drop',     drop,     false);
-reserve.addEventListener('dragend',  dragend,  false);
+// board.addEventListener("click",      click,    false);
+// board.addEventListener('dragstart',  dragstart,false);
+// board.addEventListener('dragover',   dragover, false);
+ board.addEventListener('drop',       drop,     false);
+// board.addEventListener('dragend',    dragend,  false);
+
 
 //load
 if(localStorage['placement'] === '0') {
@@ -239,6 +249,3 @@ if(localStorage['placement'] === '0') {
 } else {
   facviconDisplayManual(localStorage['useFolder']);
 }
-
-//debug
-console.log(localStorage)
