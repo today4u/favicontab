@@ -2,6 +2,7 @@ const idPrefix  = 'bid'
 const keyPrefix = 'positions';
 document.body.style.backgroundColor = localStorage['backgroundColor'];
 const board      = document.getElementById("board");
+const mainBoard  = document.createElement('main');
 
 
 var x,y;
@@ -12,7 +13,6 @@ if(localStorage['placement'] === "1") {
 
 const faviconDisplay = function(parentId) {
   chrome.bookmarks.getChildren(parentId,function(roots){
-    const mainBoard  = document.createElement('main');
     if(board.childNodes[0]) {
       board.removeChild(board.childNodes[0]); 
     }
@@ -35,7 +35,7 @@ const faviconDisplay = function(parentId) {
   });
 }
 
-const facviconDisplayManual = function(parentId) {
+const faviconDisplayManual = function(parentId) {
   const storageKey = keyPrefix+parentId;
   board.setAttribute('style','position:absolute');
   const positions    = JSON.parse(localStorage.getItem(storageKey));
@@ -139,7 +139,7 @@ const click = function(event) {
         faviconDisplay(event.target.dataset.id);
       } 
       else {
-        facviconDisplayManual();
+        faviconDisplayManual();
       }
     }
   }
@@ -247,5 +247,5 @@ if(localStorage['placement'] === '0') {
   console.log(localStorage);
   faviconDisplay(localStorage['useFolder']);  
 } else {
-  facviconDisplayManual(localStorage['useFolder']);
+  faviconDisplayManual(localStorage['useFolder']);
 }
