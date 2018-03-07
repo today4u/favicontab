@@ -4,18 +4,24 @@ document.body.style.backgroundColor = localStorage['backgroundColor'];
 const board      = document.getElementById("board");
 const mainBoard  = document.createElement('main');
 
-
 var x,y;
 let setPositions = {};
 if(localStorage['placement'] === "1") {
-  board.classList.add('position');
+  board.classList.add('manual');
+} else {
+  board.classList.add('auto');
 }
 
+
 const faviconDisplay = function(parentId) {
+  let main = document.getElementsByTagName('main');
+  if(board.childNodes[0]) {
+    console.log("remove")
+    board.removeChild(main[0]);
+    //board.removeChild(board.childNodes); 
+  }
   chrome.bookmarks.getChildren(parentId,function(roots){
-    if(board.childNodes[0]) {
-      board.removeChild(board.childNodes[0]); 
-    }
+
     if(parentId != localStorage['useFolder']) {
       chrome.bookmarks.get(String(parentId), function(items) {
         const img = document.createElement('img');
@@ -36,8 +42,7 @@ const faviconDisplay = function(parentId) {
 }
 
 const faviconDisplayManual = function(parentId) {
-  const storageKey = keyPrefix+parentId;
-  board.setAttribute('style','position:absolute');
+  const storageKey   = keyPrefix+parentId;
   const positions    = JSON.parse(localStorage.getItem(storageKey));
   
   chrome.bookmarks.getChildren(parentId,function(roots){
@@ -86,14 +91,14 @@ const output = function(node, el) {
   if(typeof node.url !== "undefined") {
     //favicon
     img.setAttribute('src',      'chrome://favicon/'+node.url);
-    img.setAttribute('class',     'favicon');
+    img.setAttribute('class',     'icon favicon');
     img.setAttribute('data-url',   node.url);
     //
     el.appendChild(img);
   } else {
     //folder
     img.setAttribute('src',         '/img/folder.svg');
-    img.setAttribute('class',       'folder');
+    img.setAttribute('class',       'icon folder');
     img.setAttribute('data-status', 'close');
     if(localStorage['placement'] === "0") {
       //span
@@ -146,14 +151,18 @@ const click = function(event) {
 }
 
 const dragstart = function(event){
+  console.log("dragstart");
   const el = document.getElementById(event.target.id);
   el.classList.add('draging');
   x = event.pageX - this.offsetLeft;
   y = event.pageY - this.offsetTop;
-  el.addEventListener("drag", drag, false);
+  if(localStorage['placement'] === "1") {
+    el.addEventListener("drag", drag, false);
+  }
 }
 
 const drag = function(event) {
+  console.log("drag");
   var drag = document.getElementsByClassName("draging");
   drag[0].style.position = 'absolute';
   drag[0].style.top      = event.pageY - y + "px";
@@ -163,6 +172,7 @@ const drag = function(event) {
 }
 
 const dragend = function(event){
+  console.log("dragend");
   var drag = document.getElementsByClassName("draging");
   if(localStorage['placement'] === "1") {
     var top  = drag[0].style.top.slice(0, -2);
@@ -188,14 +198,22 @@ const dragend = function(event){
 
 
 const dragover = function(event){
+  console.log("do");
   event.preventDefault();
   event.dataTransfer.dropEffect = 'move';
 }
 
 const drop = function(event){
+  console.log("drop");
+  if(event.target.dataset.id === undefined) {
+    return;
+  }
   const el = document.getElementsByClassName('draging');
   const bookmarkId  = el[0].dataset.id;
   let   changeIndex = Number(event.target.dataset.index);
+  
+  console.log('event.target.dataset.index => '+event.target.dataset.index);
+  console.log('el[0].dataset.index => '+el[0].dataset.index);
   if(event.target.dataset.url) {
     //to favicon
     if(event.target.dataset.index > el[0].dataset.index) {
@@ -235,10 +253,11 @@ const closeFolder = function(id) {
 }
 
 //events
-// board.addEventListener("click",      click,    false);
-// board.addEventListener('dragstart',  dragstart,false);
-// board.addEventListener('dragover',   dragover, false);
- board.addEventListener('drop',       drop,     false);
+board.addEventListener("click",      click,    false);
+if(localStorage['placement'] === "0") {
+  board.addEventListener('dragover',   dragover, false);
+  board.addEventListener('drop',       drop,     false);
+}
 // board.addEventListener('dragend',    dragend,  false);
 
 
