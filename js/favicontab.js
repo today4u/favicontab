@@ -2,7 +2,6 @@ const idPrefix  = 'bid'
 const keyPrefix = 'positions';
 document.body.style.backgroundColor = localStorage['backgroundColor'];
 const board      = document.getElementById("board");
-const mainBoard  = document.createElement('main');
 
 var x,y;
 let setPositions = {};
@@ -14,11 +13,9 @@ if(localStorage['placement'] === "1") {
 
 
 const faviconDisplay = function(parentId) {
-  let main = document.getElementsByTagName('main');
+  const mainBoard  = document.createElement('main');
   if(board.childNodes[0]) {
-    console.log("remove")
-    board.removeChild(main[0]);
-    //board.removeChild(board.childNodes); 
+    board.removeChild(board.childNodes[0]);
   }
   chrome.bookmarks.getChildren(parentId,function(roots){
 
@@ -42,6 +39,7 @@ const faviconDisplay = function(parentId) {
 }
 
 const faviconDisplayManual = function(parentId) {
+  const mainBoard  = document.createElement('main');
   const storageKey   = keyPrefix+parentId;
   const positions    = JSON.parse(localStorage.getItem(storageKey));
   
@@ -151,7 +149,6 @@ const click = function(event) {
 }
 
 const dragstart = function(event){
-  console.log("dragstart");
   const el = document.getElementById(event.target.id);
   el.classList.add('draging');
   x = event.pageX - this.offsetLeft;
@@ -162,7 +159,6 @@ const dragstart = function(event){
 }
 
 const drag = function(event) {
-  console.log("drag");
   var drag = document.getElementsByClassName("draging");
   drag[0].style.position = 'absolute';
   drag[0].style.top      = event.pageY - y + "px";
@@ -172,7 +168,6 @@ const drag = function(event) {
 }
 
 const dragend = function(event){
-  console.log("dragend");
   var drag = document.getElementsByClassName("draging");
   if(localStorage['placement'] === "1") {
     var top  = drag[0].style.top.slice(0, -2);
@@ -198,25 +193,20 @@ const dragend = function(event){
 
 
 const dragover = function(event){
-  console.log("do");
   event.preventDefault();
   event.dataTransfer.dropEffect = 'move';
 }
 
 const drop = function(event){
-  console.log("drop");
   if(event.target.dataset.id === undefined) {
     return;
   }
   const el = document.getElementsByClassName('draging');
   const bookmarkId  = el[0].dataset.id;
   let   changeIndex = Number(event.target.dataset.index);
-  
-  console.log('event.target.dataset.index => '+event.target.dataset.index);
-  console.log('el[0].dataset.index => '+el[0].dataset.index);
   if(event.target.dataset.url) {
     //to favicon
-    if(event.target.dataset.index > el[0].dataset.index) {
+    if(changeIndex > el[0].dataset.index) {
       changeIndex =  changeIndex+1;
     }
     chrome.bookmarks.move(bookmarkId, {"index": changeIndex});
@@ -227,8 +217,6 @@ const drop = function(event){
   }
   faviconDisplay(event.target.dataset.pid);
 }
-
-
 
 const openFolder = function(id) {
   const folderIcon = document.getElementById(idPrefix+id);
@@ -263,7 +251,6 @@ if(localStorage['placement'] === "0") {
 
 //load
 if(localStorage['placement'] === '0') {
-  console.log(localStorage);
   faviconDisplay(localStorage['useFolder']);  
 } else {
   faviconDisplayManual(localStorage['useFolder']);
