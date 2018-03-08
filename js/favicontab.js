@@ -11,26 +11,15 @@ if(localStorage['placement'] === "1") {
   board.classList.add('auto');
 }
 
-
 const faviconDisplay = function(parentId) {
   const mainBoard  = document.createElement('main');
   if(board.childNodes[0]) {
     board.removeChild(board.childNodes[0]);
   }
+  if(parentId != localStorage['useFolder']) {
+    setBackFolder(parentId, mainBoard);
+  }
   chrome.bookmarks.getChildren(parentId,function(roots){
-
-    if(parentId != localStorage['useFolder']) {
-      chrome.bookmarks.get(String(parentId), function(items) {
-        const img = document.createElement('img');
-        img.setAttribute('src',       '/img/folder_open.svg');
-        img.setAttribute('class',      'folder');
-        img.setAttribute('id',         idPrefix+items[0].parentId);
-        img.setAttribute('data-id',    items[0].parentId);
-        img.setAttribute('class',      'folder');
-        img.setAttribute('draggable',  'false');
-        mainBoard.insertBefore(img, mainBoard.firstChild);
-      });
-    }
     roots.forEach(function (node){
       output(node, mainBoard);
     });
@@ -39,24 +28,18 @@ const faviconDisplay = function(parentId) {
 }
 
 const faviconDisplayManual = function(parentId) {
-  const mainBoard  = document.createElement('main');
+  const mainBoard    = document.createElement('main');
   const storageKey   = keyPrefix+parentId;
   const positions    = JSON.parse(localStorage.getItem(storageKey));
+  if(board.childNodes[0]) {
+    board.removeChild(board.childNodes[0]);
+  }
   
+  if(parentId != localStorage['useFolder']) {
+    setBackFolder(parentId, mainBoard);
+  }
+
   chrome.bookmarks.getChildren(parentId,function(roots){
-    mainBoard.setAttribute('position','relative');
-    if(parentId != localStorage['useFolder']) {
-      chrome.bookmarks.get(String(parentId), function(items) {
-        const img = document.createElement('img');
-        img.setAttribute('src',       '/img/folder_open.svg');
-        img.setAttribute('class',      'folder');
-        img.setAttribute('id',         idPrefix+items[0].parentId);
-        img.setAttribute('data-id',    items[0].parentId);
-        img.setAttribute('class',      'folder');
-        img.setAttribute('draggable', 'false');
-        mainBoard.insertBefore(img, mainBoard.firstChild);
-      });
-    }
     //loop
     roots.forEach(function (node){
       if(!positions || typeof positions[node.id] === "undefined") {
@@ -65,7 +48,7 @@ const faviconDisplayManual = function(parentId) {
       } else {
         //座標あり
         setPositions[node.id] = positions[node.id];
-        let posi = positions[node.id].split(',');
+        const posi = positions[node.id].split(',');
         //出力
         const icon = output(node, mainBoard);
         icon.setAttribute('style','position:absolute;top:'+posi[0]+'px;left:'+posi[1]+'px;');
@@ -76,6 +59,22 @@ const faviconDisplayManual = function(parentId) {
   });
 }
 
+const setBackFolder = function(bookmarkId, el) {
+  chrome.bookmarks.get(String(bookmarkId), function(items) {
+    const img = document.createElement('img');
+    img.setAttribute('src',       '/img/folder_open.svg');
+    img.setAttribute('class',      'icon folder');
+    img.setAttribute('id',         idPrefix+items[0].parentId);
+    img.setAttribute('data-id',    items[0].parentId);
+    img.setAttribute('draggable',  'false');
+    if(localStorage['placement'] === "1") {
+      const posi = JSON.parse(localStorage[keyPrefix+items[0].parentId])[items[0].id].split(',');
+      img.setAttribute('style','position:absolute;top:'+posi[0]+'px;left:'+posi[1]+'px;');
+    }
+    el.insertBefore(img, el.firstChild);
+    //return img;
+  });
+}
 
 const output = function(node, el) {
   const img  = document.createElement('img');
@@ -142,7 +141,7 @@ const click = function(event) {
         faviconDisplay(event.target.dataset.id);
       } 
       else {
-        faviconDisplayManual();
+        faviconDisplayManual(event.target.dataset.id);
       }
     }
   }
