@@ -44,7 +44,7 @@ const faviconDisplayManual = function(parentId) {
     roots.forEach(function (node){
       if(!positions || typeof positions[node.id] === "undefined") {
         //座標なし
-        icon = output(node, mainBoard);
+        output(node, mainBoard);
       } else {
         //座標あり
         setPositions[node.id] = positions[node.id];

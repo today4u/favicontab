@@ -1,15 +1,10 @@
 body {
-  background-color:#ddd; 
   margin:0;
   padding:0;
 }
 #board {
   width:100%;
-  height:500px;
-  background-color:#fdd;
-}
-#board .auto .icon {
-  
+  height:100%;
 }
 .manual {
   position:absolute;
