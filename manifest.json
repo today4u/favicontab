@@ -14,7 +14,7 @@
     },
     "background" : {
         "scripts": [
-          "js/installed.js"
+          "js/installed.min.js"
         ],
         "persistent": false
     }

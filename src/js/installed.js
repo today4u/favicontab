@@ -9,7 +9,6 @@ chrome.runtime.onInstalled.addListener(function() {
   localStorage.setItem('linkTarget',      0);
   localStorage.setItem('placement',       0);
   localStorage.setItem('folderType',      0);
-  localStorage.setItem("positions",       JSON.stringify({}));
   //useFolder
   setUseFolder = function() {
     return new Promise(function(resolve, reject) {
