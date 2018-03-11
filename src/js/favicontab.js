@@ -1,10 +1,10 @@
 const idPrefix  = 'bid'
 const keyPrefix = 'positions';
-document.body.style.backgroundColor = localStorage['backgroundColor'];
 const board      = document.getElementById("board");
-
-var x,y;
+document.body.style.backgroundColor = localStorage['backgroundColor'];
+let x,y;
 let setPositions = {};
+
 if(localStorage['placement'] === "1") {
   board.classList.add('manual');
 } else {
@@ -68,8 +68,12 @@ const setBackFolder = function(bookmarkId, el) {
     img.setAttribute('data-id',    items[0].parentId);
     img.setAttribute('draggable',  'false');
     if(localStorage['placement'] === "1") {
-      const posi = JSON.parse(localStorage[keyPrefix+items[0].parentId])[items[0].id].split(',');
-      img.setAttribute('style','position:absolute;top:'+posi[0]+'px;left:'+posi[1]+'px;');
+      if(localStorage[keyPrefix+items[0].parentId]) {
+        if(JSON.parse(localStorage[keyPrefix+items[0].parentId])[items[0].id] !== undefined) {
+          const posi = JSON.parse(localStorage[keyPrefix+items[0].parentId])[items[0].id].split(',');
+          img.setAttribute('style','position:absolute;top:'+posi[0]+'px;left:'+posi[1]+'px;');
+        }
+      }
     }
     el.insertBefore(img, el.firstChild);
     //return img;
