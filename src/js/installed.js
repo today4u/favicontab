@@ -4,13 +4,13 @@ const INIT_FOLDER_TITLE = 'FaviconTabFolder';
 //拡張機能インストール時に実行
 chrome.runtime.onInstalled.addListener(function() {
   //初期値をセット
-  console.log(localStorage);
   localStorage.setItem('backgroundColor', '#ffffff');
   localStorage.setItem('linkTarget',      0);
   localStorage.setItem('placement',       0);
   localStorage.setItem('folderType',      0);
+  localStorage.setItem('useFolder',       0);
   //useFolder
-  setUseFolder = function() {
+  (function() {
     return new Promise(function(resolve, reject) {
       chrome.bookmarks.getTree(function(roots){
         var folders  = []; 
@@ -27,8 +27,7 @@ chrome.runtime.onInstalled.addListener(function() {
         reject();
       });
     });
-  }
-  setUseFolder().then(function(id){
+  })().then(function(id){
     //resolve
     localStorage.setItem('useFolder', id);
   },function(){
