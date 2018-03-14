@@ -162,7 +162,7 @@ const dragstart = function(event){
 }
 
 const drag = function(event) {
-  var drag = document.getElementsByClassName("draging");
+  const drag = document.getElementsByClassName("draging");
   drag[0].style.position = 'absolute';
   drag[0].style.top      = event.pageY - y + "px";
   drag[0].style.left     = event.pageX - x + "px";
@@ -171,13 +171,13 @@ const drag = function(event) {
 }
 
 const dragend = function(event){
-  var drag = document.getElementsByClassName("draging");
+  const drag = document.getElementsByClassName("draging");
   if(localStorage['placement'] === "1") {
-    var top  = drag[0].style.top.slice(0, -2);
-    var left = drag[0].style.left.slice(0,-2);
+    const top  = drag[0].style.top.slice(0, -2);
+    const left = drag[0].style.left.slice(0,-2);
     if(Number(left) < 0 || Number(top) < 0 ) {
       if(setPositions[event.target.dataset.id]) {
-        var posi = setPositions[event.target.dataset.id].split(',');
+        const posi = setPositions[event.target.dataset.id].split(',');
         drag[0].style.top      = posi[0]+"px";
         drag[0].style.left     = posi[1]+"px";
       } else {
