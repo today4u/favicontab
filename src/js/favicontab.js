@@ -1,5 +1,5 @@
-const idPrefix  = 'bid'
-const keyPrefix = 'positions';
+const idPrefix        = 'bid';
+const positionPrefix  = 'positions';
 const board      = document.getElementById("board");
 document.body.style.backgroundColor = localStorage['backgroundColor'];
 let x,y;
@@ -21,7 +21,7 @@ const faviconDisplay = function(parentId) {
   }
   chrome.bookmarks.getChildren(parentId,function(roots){
     roots.forEach(function (node){
-      output(node, mainBoard);
+      setIcon(node, mainBoard);
     });
     board.appendChild(mainBoard);
   });
@@ -29,12 +29,12 @@ const faviconDisplay = function(parentId) {
 
 const faviconDisplayManual = function(parentId) {
   const mainBoard    = document.createElement('main');
-  const storageKey   = keyPrefix+parentId;
+  const storageKey   = positionPrefix+parentId;
   const positions    = JSON.parse(localStorage.getItem(storageKey));
   if(board.childNodes[0]) {
     board.removeChild(board.childNodes[0]);
   }
-  
+
   if(parentId != localStorage['useFolder']) {
     setBackFolder(parentId, mainBoard);
   }
@@ -44,13 +44,13 @@ const faviconDisplayManual = function(parentId) {
     roots.forEach(function (node){
       if(!positions || typeof positions[node.id] === "undefined") {
         //座標なし
-        output(node, mainBoard);
+        setIcon(node, mainBoard);
       } else {
         //座標あり
         setPositions[node.id] = positions[node.id];
         const posi = positions[node.id].split(',');
         //出力
-        const icon = output(node, mainBoard);
+        const icon = setIcon(node, mainBoard);
         icon.setAttribute('style','position:absolute;top:'+posi[0]+'px;left:'+posi[1]+'px;');
       }
     });
@@ -68,9 +68,9 @@ const setBackFolder = function(bookmarkId, el) {
     img.setAttribute('data-id',    items[0].parentId);
     img.setAttribute('draggable',  'false');
     if(localStorage['placement'] === "1") {
-      if(localStorage[keyPrefix+items[0].parentId]) {
-        if(JSON.parse(localStorage[keyPrefix+items[0].parentId])[items[0].id] !== undefined) {
-          const posi = JSON.parse(localStorage[keyPrefix+items[0].parentId])[items[0].id].split(',');
+      if(localStorage[positionPrefix+items[0].parentId]) {
+        if(JSON.parse(localStorage[positionPrefix+items[0].parentId])[items[0].id] !== undefined) {
+          const posi = JSON.parse(localStorage[positionPrefix+items[0].parentId])[items[0].id].split(',');
           img.setAttribute('style','position:absolute;top:'+posi[0]+'px;left:'+posi[1]+'px;');
         }
       }
@@ -80,7 +80,7 @@ const setBackFolder = function(bookmarkId, el) {
   });
 }
 
-const output = function(node, el) {
+const setIcon = function(node, el) {
   const img  = document.createElement('img');
   img.addEventListener("dragstart", dragstart, false);
   img.setAttribute('id',         idPrefix+node.id);
@@ -186,7 +186,7 @@ const dragend = function(event){
         drag[0].style.left     = null;
       }
     } else {
-      const storageKey = keyPrefix+event.target.dataset.pid;
+      const storageKey = positionPrefix+event.target.dataset.pid;
       setPositions[event.target.dataset.id] = top+','+left; 
       localStorage.setItem(storageKey, JSON.stringify(setPositions));
     }
@@ -232,7 +232,7 @@ const openFolder = function(id) {
 
   chrome.bookmarks.getChildren(id, function(roots){
     roots.forEach(function (node){
-        output(node, cSpan);
+        setIcon(node, cSpan);
     });
   });
 }
