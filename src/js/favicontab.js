@@ -1,9 +1,11 @@
 const idPrefix        = 'bid';
 const positionPrefix  = 'positions';
+const notExistPrefix  = 'notexists';
 const board      = document.getElementById("board");
 document.body.style.backgroundColor = localStorage['backgroundColor'];
 let x,y;
 let setPositions = {};
+
 
 if(localStorage['placement'] === "1") {
   board.classList.add('manual');
@@ -80,7 +82,7 @@ const setBackFolder = function(bookmarkId, el) {
   });
 }
 
-const setIcon = function(node, el) {
+const setIcon = function(node, el, posi) { // posi, 
   const img  = document.createElement('img');
   img.addEventListener("dragstart", dragstart, false);
   img.setAttribute('id',         idPrefix+node.id);
@@ -95,6 +97,24 @@ const setIcon = function(node, el) {
     img.setAttribute('class',     'icon favicon');
     img.setAttribute('data-url',   node.url);
     //
+    img.onload = function() {
+      const canvas = document.createElement('canvas');
+      canvas.width  = this.width;
+      canvas.height = this.height;
+      const ctx = canvas.getContext('2d');
+      ctx.drawImage(this, 0, 0);
+      const defaultIcon = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAYklEQVQ4T2NkoBAwIuuPior6j8O8xmXLljVgk8MwYNmyZdgMfcjAwLAAmyFEGfDv3z9FJiamA9gMIcoAkKsiIiIUsBlClAHofkf2JkED0DWDAnrUgOEfBsRkTpzpgBjN6GoA24V1Efr1zoAAAAAASUVORK5CYII=';
+      if(canvas.toDataURL() === defaultIcon) {
+          const key = notExistPrefix+node.parentId;
+          console.log(key);
+          let setNotExists = {};
+          //localStorage.setItem(key, JSON.stringify({})); //refresh
+          setNotExists          = JSON.parse(localStorage.getItem(key));
+          setNotExists[node.id] = 1;
+          localStorage.setItem(key, JSON.stringify(setNotExists)); //refresh
+          console.log('favicon does not exist');
+      }
+    };
     el.appendChild(img);
   } else {
     //folder
