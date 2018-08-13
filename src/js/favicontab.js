@@ -94,7 +94,7 @@ const setIcon = function(node, el) {
   img.setAttribute('draggable', 'true');
   if(typeof node.url !== "undefined") {
     //favicon
-    if (typeof(setNotExists[node.id]) == "undefined") {
+    if (setNotExists == null || typeof(setNotExists[node.id]) == "undefined") {
         img.setAttribute('src',      'chrome://favicon/'+node.url);
     } else {
         img.setAttribute('src',      '/img/defaultIcon.png');
