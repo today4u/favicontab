@@ -1,5 +1,6 @@
 const idPrefix        = 'bid';
 const positionPrefix  = 'positions';
+const notExistPrefix  = 'notexists';
 const board      = document.getElementById("board");
 document.body.style.backgroundColor = localStorage['backgroundColor'];
 let x,y;
@@ -82,6 +83,8 @@ const setBackFolder = function(bookmarkId, el) {
 
 const setIcon = function(node, el) {
   const img  = document.createElement('img');
+  const key = notExistPrefix+node.parentId;
+  let setNotExists = JSON.parse(localStorage.getItem(key));
   img.addEventListener("dragstart", dragstart, false);
   img.setAttribute('id',         idPrefix+node.id);
   img.setAttribute('title',      node.title);
@@ -91,10 +94,32 @@ const setIcon = function(node, el) {
   img.setAttribute('draggable', 'true');
   if(typeof node.url !== "undefined") {
     //favicon
-    img.setAttribute('src',      'chrome://favicon/'+node.url);
+    if (setNotExists == null || typeof(setNotExists[node.id]) == "undefined") {
+        img.setAttribute('src',      'chrome://favicon/'+node.url);
+    } else {
+        img.setAttribute('src',      '/img/defaultIcon.png');
+    }
     img.setAttribute('class',     'icon favicon');
     img.setAttribute('data-url',   node.url);
-    //
+    
+    img.onload = function() {
+      const canvas = document.createElement('canvas');
+      canvas.width  = this.width;
+      canvas.height = this.height;
+      const ctx = canvas.getContext('2d');
+      ctx.drawImage(this, 0, 0);
+      const defaultIcon = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAYklEQVQ4T2NkoBAwIuuPior6j8O8xmXLljVgk8MwYNmyZdgMfcjAwLAAmyFEGfDv3z9FJiamA9gMIcoAkKsiIiIUsBlClAHofkf2JkED0DWDAnrUgOEfBsRkTpzpgBjN6GoA24V1Efr1zoAAAAAASUVORK5CYII=';
+      if(canvas.toDataURL() === defaultIcon) {
+          let setNotExists = JSON.parse(localStorage.getItem(key));
+          if(setNotExists == null) {
+            setNotExists = {};
+          }
+          setNotExists[node.id] = 1;
+          localStorage.setItem(key, JSON.stringify(setNotExists)); //refresh
+          console.log(JSON.stringify(setNotExists));
+          console.log('favicon does not exist');
+      }
+    };
     el.appendChild(img);
   } else {
     //folder
