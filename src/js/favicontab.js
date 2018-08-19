@@ -1,4 +1,4 @@
-import Main  from './main';
+import Main  from './modules/favicontab';
 
 const board = document.getElementById("board");
 document.body.style.backgroundColor = localStorage['backgroundColor'];

@@ -1,4 +1,4 @@
-import Const       from './const'
+import Const       from '../const'
 
 export default {
     faviconDisplay: function(parentId) {
@@ -104,7 +104,7 @@ export default {
                 ctx.drawImage(this, 0, 0);
                 const defaultIcon = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAYklEQVQ4T2NkoBAwIuuPior6j8O8xmXLljVgk8MwYNmyZdgMfcjAwLAAmyFEGfDv3z9FJiamA9gMIcoAkKsiIiIUsBlClAHofkf2JkED0DWDAnrUgOEfBsRkTpzpgBjN6GoA24V1Efr1zoAAAAAASUVORK5CYII=';
                 if(canvas.toDataURL() === defaultIcon) {
-                    const withoutIcons = JSON.parse(localStorage.getItem(key));
+                    let withoutIcons = JSON.parse(localStorage.getItem(key));
                     if(withoutIcons == null) {
                         withoutIcons = {};
                     }
