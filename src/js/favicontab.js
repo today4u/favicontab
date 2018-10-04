@@ -1,13 +1,24 @@
 import Main  from './modules/favicontab';
 
-const board = document.getElementById("board");
+const board  = document.getElementById("board");
+const header = document.getElementById("header");
 document.body.style.backgroundColor = localStorage['backgroundColor'];
 
 if(localStorage['placement'] === "1") {
     board.classList.add('manual');
+    header.classList.add('manual');
 } else {
     board.classList.add('auto');
+    header.classList.add('auto');
 }
+
+
+const actionController = document.getElementById("actionController");
+actionController.addEventListener("click",function(event) {
+  Main.setBoradAction(event.target.id);
+});
+
+
 
 //events
 board.addEventListener("click",function(event) {
@@ -79,4 +90,6 @@ else {
     //load
     Main.faviconDisplayManual(localStorage['useFolder']);
 }
+
+
 

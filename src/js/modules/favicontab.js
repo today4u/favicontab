@@ -196,5 +196,14 @@ export default {
     folderIcon.setAttribute('src',       '/img/folder.svg');
     document.getElementById('childFolder'+id).remove();
   }
+
+  ,
+  setBoradAction: function(targetId) {
+    if(!targetId.length) {
+       return;
+    }
+    const value = document.getElementById(targetId).getAttribute('value');
+    document.getElementById("board").dataset.action = value;
+  }
 }
 
