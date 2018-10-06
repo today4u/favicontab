@@ -9,7 +9,7 @@ chrome.runtime.onInstalled.addListener(function() {
   Main.initLocalStrage('linkTarget',      0);
   Main.initLocalStrage('placement',       0);
   Main.initLocalStrage('folderType',      0);
-  Main.initLocalStrage('useFolder',       0);
+  Main.initLocalStrage('homeFolder',      0);
   //順番に実行
   Promise.resolve()
     .then(function(){
@@ -32,12 +32,12 @@ chrome.runtime.onInstalled.addListener(function() {
     .then(function(id){
       return new Promise(function(resolve, reject){
         //初期フォルダーに指定
-        localStorage.setItem('useFolder', id);
+        localStorage.setItem('homeFolder', id);
       });
     })
     .catch(function(){
       chrome.bookmarks.create({"title": Const.initFolderTitle},function(newFolder) {
-        localStorage.setItem('useFolder', newFolder.id);
+        localStorage.setItem('homeFolder', newFolder.id);
       });  
     });
 });

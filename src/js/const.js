@@ -14,7 +14,7 @@ export default {
     ],
     "folderType": [
       {"id":"folderType0", "value":0, "label":"Change Screen"},
-      {"id":"folderType1", "value":1, "label":"Open & Close" }
+      {"id":"folderType1", "value":1, "label":"Toggle" }
     ]
   }
 }

@@ -15,7 +15,7 @@ export default {
           node.children.forEach(parser);
         }
       }
-      self.buildOptionSettingRadio("useFolder",folders);
+      self.buildOptionSettingRadio("homeFolder",folders);
     });
     //other options
     self.buildOptionSettingRadio("placement",  Const.optionsData.placement);

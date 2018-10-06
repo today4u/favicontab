@@ -5,20 +5,15 @@ const header = document.getElementById("header");
 document.body.style.backgroundColor = localStorage['backgroundColor'];
 
 if(localStorage['placement'] === "1") {
-    board.classList.add('manual');
-    header.classList.add('manual');
+    document.body.classList.add('manual');
 } else {
-    board.classList.add('auto');
-    header.classList.add('auto');
+    document.body.classList.add('auto');
 }
-
 
 const actionController = document.getElementById("actionController");
 actionController.addEventListener("click",function(event) {
   Main.setBoradAction(event.target.id);
 });
-
-
 
 //events
 board.addEventListener("click",function(event) {
@@ -26,35 +21,10 @@ board.addEventListener("click",function(event) {
         return false;
     }
     if(event.target.dataset.url) {
-        //click favicon
-        switch(localStorage["linkTarget"]) {
-          case "0":
-            window.location.href = event.target.dataset.url;
-            break;
-          case "1":
-            window.open(event.target.dataset.url, '_blank');
-            break;
-          default:
-            break;
-        }
+        Main.clickFavicon();
     }
     else {
-        if(localStorage['folderType'] === "1" && localStorage['placement'] === "0") {
-            if(event.target.dataset.status === 'close') {
-                Main.openFolder(event.target.dataset.id);
-            } 
-            else {
-                Main.closeFolder(event.target.dataset.id);
-            }
-        } 
-        else {
-            if(localStorage['placement'] === '0') {
-                Main.faviconDisplay(event.target.dataset.id);
-            } 
-            else {
-                Main.faviconDisplayManual(event.target.dataset.id);
-            }
-        }
+        Main.clickFolder();
     }
 },false);
 
@@ -81,15 +51,9 @@ if(localStorage['placement'] === "0") {
             //to folder
             chrome.bookmarks.move(bookmarkId, {"parentId": event.target.dataset.id});
         }
-        Main.faviconDisplay(event.target.dataset.pid);
+        Main.showFaviconDisplay(event.target.dataset.pid);
     }, false);
-    //load
-    Main.faviconDisplay(localStorage['useFolder']);
-}
-else {
-    //load
-    Main.faviconDisplayManual(localStorage['useFolder']);
 }
 
-
+Main.showFaviconDisplay(localStorage['homeFolder']);
 

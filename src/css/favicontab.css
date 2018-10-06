@@ -6,28 +6,32 @@ body {
   width:100%;
   height:100%;
 }
-div.manual {
+
+body.manual {
   position:absolute;
+  width:100%;
+  height:100%;
 }
 
-div.manual .icon {
+body.manual .icon {
   width: 16px;
   height: 16px;
   vertical-align:bottom;
 }
 
-div.auto .favicon {
+body.auto .favicon {
   margin: 10px;
   width: 16px;
   height: 16px;  
   vertical-align:bottom;
 }
-div.auto .folder {
+body.auto .folder {
   margin: 8px;
   width: 20px;
   height: 20px;
   vertical-align:bottom;
 }
+
 
 header {
   padding: 12px;
@@ -37,39 +41,12 @@ header {
   background-color: #222;
 }
 
-button {
-  cursor: pointer;
-  border-radius: 4px;
-  padding:3px 6px;
-  background-color:#fff;
-}
-button:focus{
-  outline: none;
-}
-
-
 .button-group {
   display: flex;
   justify-content: center;
   align-items: center;
 }
-/*button*/   /*
-.button-group > button {}
-.button-group > button:first-child {
-  border-top-right-radius: 0;
-  border-bottom-right-radius: 0;
-}
-.button-group > button:last-child {
-  border-top-left-radius: 0;
-  border-bottom-left-radius: 0;
-  border-left:none;
-}
-.button-group > button:nth-child(n+2):nth-last-child(n+2) {
-  border-radius: 0;
-  border-left:none;
-}  */
 
-/*radio*/
 .button-group > label {}
 .button-group > label:first-child > div {
   border-top-right-radius: 0;
@@ -104,4 +81,16 @@ button:focus{
   cursor: auto;
   fill: #444;
 }
+
+/**/
+
+
+#board.delete {
+  cursor: url(../../img/target.png) 8 8, crosshair;
+}
+
+#board.move {
+  cursor: move;
+}
+
 

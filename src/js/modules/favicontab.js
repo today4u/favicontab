@@ -1,13 +1,25 @@
 import Const       from '../const'
 
 export default {
+  showFaviconDisplay: function(id) {
+    if(id === undefined) {
+      id = localStorage['homeFolder'];
+    }
+    if(localStorage['placement'] === '0') {
+      this.faviconDisplay(id);
+    } 
+    else {
+      this.faviconDisplayManual(id);
+    }
+  }
+  ,
   faviconDisplay: function(parentId) {
     const mainBoard    = document.createElement('main');
     const _this        = this;
     if(board.childNodes[0]) {
       board.removeChild(board.childNodes[0]);
     }
-    if(parentId != localStorage['useFolder']) {
+    if(parentId != localStorage['homeFolder']) {
       this.setBackFolder(parentId, mainBoard);
     }
     chrome.bookmarks.getChildren(parentId,function(roots){
@@ -16,8 +28,8 @@ export default {
       });
       board.appendChild(mainBoard);
     });
-  }, 
-
+  }
+  , 
   faviconDisplayManual: function(parentId) {
     const _this        = this;
     const mainBoard    = document.createElement('main');
@@ -27,7 +39,7 @@ export default {
     if(board.childNodes[0]) {
       board.removeChild(board.childNodes[0]);
     }
-    if(parentId != localStorage['useFolder']) {
+    if(parentId != localStorage['homeFolder']) {
       this.setBackFolder(parentId, mainBoard);
     }
 
@@ -51,8 +63,8 @@ export default {
       //描写毎に削除されたブックマークなどのデータを取り除くため、ローカルストレージ内のデータを更新する。
       localStorage.setItem(storageKey, JSON.stringify(positionData)); //refresh
     });
-  },
-
+  }
+  ,
   setBackFolder: function(bookmarkId, el) {
     chrome.bookmarks.get(String(bookmarkId), function(items) {
       const img = document.createElement('img');
@@ -71,8 +83,8 @@ export default {
       }
       el.insertBefore(img, el.firstChild);
     });
-  },
-
+  }
+  ,
   setIcon: function(node, el) {
     const img   = document.createElement('img');
     const key   = Const.notExistPrefix+node.parentId;
@@ -131,8 +143,8 @@ export default {
       }
     }
     return img;
-  },
-
+  }
+  ,
   dragstart: function(event){
     const el = document.getElementById(event.target.id);
     const x = event.pageX - el.offsetLeft;
@@ -172,8 +184,30 @@ export default {
         this.classList.remove("draging");
       },false);
     }
-  },
-
+  }
+  ,
+  clickFavicon: function() {
+    if(localStorage["linkTarget"]) {
+      window.open(event.target.dataset.url, '_blank');
+    } else {
+      window.location.href = event.target.dataset.url;
+    }
+  }
+  ,
+  clickFolder: function() {
+    if(localStorage['folderType'] === "1" && localStorage['placement'] === "0") {
+      if(event.target.dataset.status === 'close') {
+        this.openFolder(event.target.dataset.id);
+      } 
+      else {
+        this.closeFolder(event.target.dataset.id);
+      }
+    } 
+    else {
+      this.showFaviconDisplay(event.target.dataset.id)
+    }
+  }
+  ,
   openFolder: function(id) {
     const folderIcon = document.getElementById(Const.idPrefix+id);
     folderIcon.setAttribute('data-status', 'open');
@@ -188,22 +222,23 @@ export default {
         this.setIcon(node, cSpan);
       });
     });
-  },
-    
+  }
+  ,  
   closeFolder: function(id) {
     const folderIcon = document.getElementById(Const.idPrefix+id);
     folderIcon.setAttribute('data-status', 'close');
     folderIcon.setAttribute('src',       '/img/folder.svg');
     document.getElementById('childFolder'+id).remove();
   }
-
   ,
   setBoradAction: function(targetId) {
     if(!targetId.length) {
-       return;
+      return;
     }
     const value = document.getElementById(targetId).getAttribute('value');
     document.getElementById("board").dataset.action = value;
+    document.getElementById("board").removeAttribute('class');
+    document.getElementById("board").classList.add(value);
   }
 }
 
