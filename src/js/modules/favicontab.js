@@ -107,7 +107,7 @@ export default {
       }
       img.setAttribute('class',     'icon favicon');
       img.setAttribute('data-url',   node.url);
-        
+      
       img.onload = function() {
         const canvas = document.createElement('canvas');
         canvas.width  = this.width;
@@ -187,10 +187,21 @@ export default {
   }
   ,
   clickFavicon: function() {
-    if(localStorage["linkTarget"]) {
-      window.open(event.target.dataset.url, '_blank');
-    } else {
-      window.location.href = event.target.dataset.url;
+    switch(document.getElementById('board').dataset.action) {
+      case 'link':
+        if(localStorage["linkTarget"]) {
+          window.open(event.target.dataset.url, '_blank');
+        } else {
+          window.location.href = event.target.dataset.url;
+        }
+        break;
+      case 'delete':
+        const target  = document.getElementById(event.target.id);
+        const id      = target.dataset.id;
+        chrome.bookmarks.remove(id, function(){
+          target.parentNode.removeChild(target);
+        });
+        break;
     }
   }
   ,
