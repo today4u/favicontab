@@ -210,9 +210,12 @@ export default {
     if(event.target.dataset.status === 'close' && document.getElementById('board').dataset.action === 'delete') {
       const target  = document.getElementById(event.target.id);
       const id      = target.dataset.id;
-      chrome.bookmarks.removeTree(id, function(){
-        target.parentNode.removeChild(target);
-      });
+      if(confirm('Delete all items in this folder. Is it OK?')) {
+        chrome.bookmarks.removeTree(id, function(){
+          target.parentNode.removeChild(target);
+        });
+      }
+      return;
     }
     if(localStorage['folderType'] === "1" && localStorage['placement'] === "0") {
       if(event.target.dataset.status === 'close') {
