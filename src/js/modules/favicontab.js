@@ -146,11 +146,15 @@ export default {
   }
   ,
   dragstart: function(event){
+    if(document.getElementById('board').dataset.action !== 'move') {
+      return;
+    }
     const el = document.getElementById(event.target.id);
     const x = event.pageX - el.offsetLeft;
     const y = event.pageY - el.offsetTop;
     el.classList.add('draging');
     if(localStorage['placement'] == "1") {
+
       el.addEventListener("drag", function(event) {
         this.style.position = 'absolute';
         this.style.top      = event.pageY - y + "px";
@@ -206,11 +210,10 @@ export default {
   }
   ,
   clickFolder: function() {
-    const action = document.getElementById('board').dataset.action;
     if(event.target.dataset.status === 'close' && document.getElementById('board').dataset.action === 'delete') {
       const target  = document.getElementById(event.target.id);
       const id      = target.dataset.id;
-      if(confirm('Delete all items in this folder. Is it OK?')) {
+      if(confirm('Delete all bookmarks in this folder. Is it OK?')) {
         chrome.bookmarks.removeTree(id, function(){
           target.parentNode.removeChild(target);
         });
