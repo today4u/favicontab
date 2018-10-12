@@ -156,6 +156,9 @@ export default {
     if(localStorage['placement'] == "1") {
 
       el.addEventListener("drag", function(event) {
+        if(document.getElementById('board').dataset.action !== 'move') {
+          return;
+        }
         this.style.position = 'absolute';
         this.style.top      = event.pageY - y + "px";
         this.style.left     = event.pageX - x + "px";
@@ -165,6 +168,9 @@ export default {
         }, false);
       }, false);
       el.addEventListener("dragend", function(event) {
+        if(document.getElementById('board').dataset.action !== 'move') {
+          return;
+        }
         const storageKey = Const.positionPrefix+event.target.dataset.pid;
         const positions  = JSON.parse(localStorage.getItem(storageKey));
         const top        = this.style.top.slice(0, -2);
