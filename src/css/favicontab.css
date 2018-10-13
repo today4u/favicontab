@@ -61,7 +61,7 @@ header {
   border-bottom-left-radius: 0;
   border-left:none;
 }
-.button-group > label > div {
+.button-group > label > div{
   border:1px solid #ccc;
   border-radius: 4px;
   background-color: #444;
@@ -80,6 +80,22 @@ header {
   cursor: auto;
   fill: #444;
 }
+
+button {
+  border-radius: 4px;
+  background-color:#fff;
+  color:#fff;
+  cursor: auto;
+  fill: #444;
+  padding:3px;
+}
+
+button > div {
+  width:16px;
+  height:16px;
+
+}
+
 
 #board.delete img {
   cursor: url(../../img/target.png) 8 8, crosshair;

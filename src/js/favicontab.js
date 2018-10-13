@@ -15,6 +15,12 @@ actionController.addEventListener("click",function(event) {
   Main.setBoradAction(event.target.id);
 });
 
+//hide header
+document.getElementById("headerHide").addEventListener("click",function(event) {
+  header.style.display = "none";
+});
+
+
 //events
 board.addEventListener("click",function(event) {
     if(event.target.dataset.id === undefined) {
