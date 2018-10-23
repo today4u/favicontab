@@ -19,6 +19,37 @@ actionController.addEventListener("click",function(event) {
 document.getElementById("headerHide").addEventListener("click",function(event) {
   header.style.display = "none";
 });
+//create folder
+document.getElementById("createFolder").addEventListener("click",function(event) {
+  document.getElementById("modal").style.display = '';
+  document.getElementById("folderNameText").value = "";
+  document.getElementById("folderNameText").focus();
+  //Main.modalCreateFolder();
+});
+//modal cancel
+document.getElementById("modal").addEventListener('click',function(event) {
+  document.getElementById("modal").style.display = "none";
+});
+document.getElementById("modalCancel").addEventListener('click',function(event) {
+  document.getElementById("modal").style.display = "none";
+});
+document.getElementById("modalContent").addEventListener('click',function(event) {
+  event.stopPropagation();
+});
+document.getElementById("modalExecution").addEventListener('click',function(event) {
+  Main.crateFolder(document.getElementById("folderNameText").value);
+});
+
+// document.getElementById("modalCancel").addEventListener('click',function(event){
+//   document.getElementById("modal").style.display = "none";
+// });
+
+function out(s) {
+  return function(e) {
+    e.stopPropagation();
+    console.log(s);
+  }
+}
 
 
 //events

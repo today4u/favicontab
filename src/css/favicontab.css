@@ -81,19 +81,19 @@ header {
   fill: #444;
 }
 
-button {
+#header > button {
   border-radius: 4px;
   background-color:#fff;
   color:#fff;
   cursor: auto;
   fill: #444;
   padding:3px;
+  margin: 0 5px;
 }
 
-button > div {
+#header > button > div {
   width:16px;
   height:16px;
-
 }
 
 
@@ -103,5 +103,37 @@ button > div {
 #board.move img{
   cursor: move;
 }
+
+
+#modal {
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0,0,0,0.5);
+  z-index: 100;
+}
+#modalContent {
+  background-color:#fff;
+  position: absolute;
+  width: 200px;
+  top: 50%;
+  left: 50%;
+  transform: translateY(-50%) translateX(-50%);
+  text-align:center;
+  padding:10px;
+}
+#modalMain {
+  padding-bottom:10px;
+}
+
+#modalFooter {
+  border-top: 1px solid #888;
+  padding-top:10px;
+}
+
 
 
