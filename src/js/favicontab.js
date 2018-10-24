@@ -26,7 +26,7 @@ document.getElementById("createFolder").addEventListener("click",function(event)
   document.getElementById("folderNameText").focus();
   //Main.modalCreateFolder();
 });
-//modal cancel
+//modal 
 document.getElementById("modal").addEventListener('click',function(event) {
   document.getElementById("modal").style.display = "none";
 });
@@ -39,18 +39,6 @@ document.getElementById("modalContent").addEventListener('click',function(event)
 document.getElementById("modalExecution").addEventListener('click',function(event) {
   Main.crateFolder(document.getElementById("folderNameText").value);
 });
-
-// document.getElementById("modalCancel").addEventListener('click',function(event){
-//   document.getElementById("modal").style.display = "none";
-// });
-
-function out(s) {
-  return function(e) {
-    e.stopPropagation();
-    console.log(s);
-  }
-}
-
 
 //events
 board.addEventListener("click",function(event) {
