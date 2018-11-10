@@ -14,7 +14,7 @@
     },
     "background" : {
         "scripts": [
-          "dist/js/installed.min.js"
+          "js/installed.min.js"
         ],
         "persistent": false
     }

@@ -16,6 +16,8 @@ export default {
   faviconDisplay: function(parentId) {
     const mainBoard    = document.createElement('main');
     const _this        = this;
+    mainBoard.setAttribute('id','main');
+    mainBoard.setAttribute('data-pid',parentId);
     if(board.childNodes[0]) {
       board.removeChild(board.childNodes[0]);
     }
@@ -36,6 +38,8 @@ export default {
     const storageKey   = Const.positionPrefix+parentId;
     const positions    = JSON.parse(localStorage.getItem(storageKey));
     const positionData = {};
+    mainBoard.setAttribute('id','main');
+    mainBoard.setAttribute('data-pid',parentId);
     if(board.childNodes[0]) {
       board.removeChild(board.childNodes[0]);
     }
@@ -270,6 +274,22 @@ export default {
     document.getElementById("board").dataset.action = value;
     document.getElementById("board").removeAttribute('class');
     document.getElementById("board").classList.add(value);
+  }
+  ,
+  modalCreateFolder: function() {
+    //document.getElementById("modalMain").innerHTML = '<input type="text" name="folderName" value="new">';
+  }
+  ,
+  crateFolder: function(str) {
+    const _this    = this;
+    const main     = document.getElementById("main");
+    const parentId = main.dataset.pid;
+    chrome.bookmarks.create({'parentId': parentId,'title': str},
+      function(newFolder) {
+        _this.setIcon(newFolder, main);
+        document.getElementById("modal").style.display = "none";
+      }
+    );
   }
 }
 

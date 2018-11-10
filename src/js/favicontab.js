@@ -15,6 +15,31 @@ actionController.addEventListener("click",function(event) {
   Main.setBoradAction(event.target.id);
 });
 
+//hide header
+document.getElementById("headerHide").addEventListener("click",function(event) {
+  header.style.display = "none";
+});
+//create folder
+document.getElementById("createFolder").addEventListener("click",function(event) {
+  document.getElementById("modal").style.display = '';
+  document.getElementById("folderNameText").value = "";
+  document.getElementById("folderNameText").focus();
+  //Main.modalCreateFolder();
+});
+//modal 
+document.getElementById("modal").addEventListener('click',function(event) {
+  document.getElementById("modal").style.display = "none";
+});
+document.getElementById("modalCancel").addEventListener('click',function(event) {
+  document.getElementById("modal").style.display = "none";
+});
+document.getElementById("modalContent").addEventListener('click',function(event) {
+  event.stopPropagation();
+});
+document.getElementById("modalExecution").addEventListener('click',function(event) {
+  Main.crateFolder(document.getElementById("folderNameText").value);
+});
+
 //events
 board.addEventListener("click",function(event) {
     if(event.target.dataset.id === undefined) {

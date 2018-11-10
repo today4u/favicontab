@@ -61,7 +61,7 @@ header {
   border-bottom-left-radius: 0;
   border-left:none;
 }
-.button-group > label > div {
+.button-group > label > div{
   border:1px solid #ccc;
   border-radius: 4px;
   background-color: #444;
@@ -81,6 +81,22 @@ header {
   fill: #444;
 }
 
+#header > button {
+  border-radius: 4px;
+  background-color:#fff;
+  color:#fff;
+  cursor: auto;
+  fill: #444;
+  padding:3px;
+  margin: 0 5px;
+}
+
+#header > button > div {
+  width:16px;
+  height:16px;
+}
+
+
 #board.delete img {
   cursor: url(../../img/target.png) 8 8, crosshair;
 }
@@ -89,3 +105,53 @@ header {
 }
 
 
+#modal {
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0,0,0,0.5);
+  z-index: 100;
+}
+#modalContent {
+  background-color:#fff;
+  position: absolute;
+  width: 200px;
+  top: 50%;
+  left: 50%;
+  transform: translateY(-50%) translateX(-50%);
+  text-align:center;
+  padding:10px;
+}
+#modalMain {
+  padding-bottom:10px;
+  text-align:left;
+}
+
+#modalFooter {
+  border-top: 1px solid #888;
+  padding-top:10px;
+}
+
+#folderNameText {
+  width:98%;
+  height:20px;
+}
+
+#modalCancel {
+  border: 1px solid #bbb;
+  background-color: #fff;
+  color:#000;
+  width:60px;
+  height:30px;
+}
+#modalExecution {
+  border: 1px solid #bbb;
+  background-color: #55f;
+  color:#fff;
+  width:60px;
+  height:30px;
+}
