@@ -128,6 +128,7 @@ header {
 }
 #modalMain {
   padding-bottom:10px;
+  text-align:left;
 }
 
 #modalFooter {
@@ -135,5 +136,22 @@ header {
   padding-top:10px;
 }
 
+#folderNameText {
+  width:98%;
+  height:20px;
+}
 
-
+#modalCancel {
+  border: 1px solid #bbb;
+  background-color: #fff;
+  color:#000;
+  width:60px;
+  height:30px;
+}
+#modalExecution {
+  border: 1px solid #bbb;
+  background-color: #55f;
+  color:#fff;
+  width:60px;
+  height:30px;
+}
